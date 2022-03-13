@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { storageHelper, storageKeys } from './storage-helper';
 
-axios.defaults.baseURL = 'http://localhost:5000/api';
+axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL;
 
 export const coreApi = {
   post

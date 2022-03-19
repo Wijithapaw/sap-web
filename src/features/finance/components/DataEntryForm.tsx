@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, Button, ButtonGroup, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import DateSelect from '../../../components/DateSelect';
 import Dropdown from '../../../components/Dropdown';
 import { saveTransaction } from '../finance-api';
 import { expenseTypesSelector, incomeTypesSelector, projectsSelector } from '../finance-slice';
@@ -105,9 +106,7 @@ export default function DataEntryForm() {
       <Label>
         Date
       </Label>
-      <Input type='date'
-        value={date.toLocaleDateString('en-CA')}
-        onChange={(e) => setDate(new Date(e.target.value))} />
+      <DateSelect value={date} onChange={setDate} />
     </FormGroup>
     <FormGroup>
       <Label>

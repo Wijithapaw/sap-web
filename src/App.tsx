@@ -11,6 +11,7 @@ import AuthGuard from './components/AuthGuard';
 import { Permissions } from './app/constants';
 import DataEntryPage from './features/finance/components/DataEntryPage';
 import { fetchExpenseTypesAsync, fetchIncomeTypesAsync, fetchProjectsAsync } from './features/finance/finance-slice';
+import ReportsPage from './features/finance/components/ReportsPage';
 
 function App() {
   const user = useAppSelector(selectAuthUser);
@@ -49,6 +50,9 @@ function App() {
               <AuthGuard>
                 <li className="nav-item"><Link className="nav-link active" to="/data-entry">Data Entry</Link></li>
               </AuthGuard>
+              <AuthGuard permission={Permissions.financialReports}>
+                <li className="nav-item"><Link className="nav-link active" to="/reports">Reports</Link></li>
+              </AuthGuard>
               {
                 user ? <li className="nav-item dropdown">
                   <a className="nav-link dropdown-toggle"
@@ -73,6 +77,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/counter" element={<PrivateRoute><Counter /></PrivateRoute>} />
           <Route path="/data-entry" element={<PrivateRoute><DataEntryPage /></PrivateRoute>} />
+          <Route path="/reports" element={<PrivateRoute permission={Permissions.financialReports}><ReportsPage /></PrivateRoute>} />
           <Route path="/" element={<Navigate to="/data-entry" />} />
         </Routes>
       </div>

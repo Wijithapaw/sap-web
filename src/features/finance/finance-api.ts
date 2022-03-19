@@ -1,7 +1,6 @@
 import { coreApi } from "../../app/core-api";
-import { storageHelper, storageKeys } from "../../app/storage-helper";
 import { ListItem } from "../../app/types";
-import { TransactionInput } from "./types";
+import { Transaction, TransactionFilter, TransactionInput } from "./types";
 
 export function fetchProjects() {
   return coreApi.get<ListItem[]>('Projects/ListItems');
@@ -19,3 +18,6 @@ export function saveTransaction(data: TransactionInput) {
   return coreApi.post<string>('Transactions', data);
 }
 
+export function fetchTransactions(filter: TransactionFilter) {
+  return coreApi.get<Transaction[]>('Transactions', filter);
+}

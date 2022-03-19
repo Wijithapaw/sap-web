@@ -12,3 +12,25 @@ export interface TransactionInput {
   amount: number;
   reconciled: boolean;
 }
+
+export interface Transaction {
+  id: string;
+  category: number;
+  typeId: string;
+  type: string;
+  date: Date;
+  description: string;
+  projectId: string;
+  projectName: string;
+  amount: number;
+  reconciled: boolean;
+  recondiledBy: string;
+  recondiledById: string;
+}
+
+export interface TransactionFilter {
+  projects: string[];
+  fromDate: string;
+  toDate: string;
+  searchTerm?: string;
+}

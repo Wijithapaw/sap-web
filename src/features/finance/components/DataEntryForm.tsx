@@ -5,12 +5,12 @@ import DateSelect from '../../../components/DateSelect';
 import Dropdown from '../../../components/Dropdown';
 import { saveTransaction } from '../finance-api';
 import { expenseTypesSelector, incomeTypesSelector, projectsSelector } from '../finance-slice';
-import { ExpenseCategory, TransactionInput } from '../types';
+import { TxnCategory, TransactionInput } from '../types';
 
 export default function DataEntryForm() {
   const dispatch = useAppDispatch();
 
-  const [category, setCategory] = useState<ExpenseCategory>(ExpenseCategory.Expense)
+  const [category, setCategory] = useState<TxnCategory>(TxnCategory.Expense)
   const [amount, setAmount] = useState(0.00);
   const [date, setDate] = useState(new Date());
   const [description, setDesc] = useState('');
@@ -64,14 +64,14 @@ export default function DataEntryForm() {
   return <Form onSubmit={handleSubmit} onReset={handleReset}>
     <FormGroup>
       <ButtonGroup className='w-100'>
-        <Button outline={category != ExpenseCategory.Expense}
+        <Button outline={category != TxnCategory.Expense}
           color='danger'
-          onClick={() => setCategory(ExpenseCategory.Expense)}>
+          onClick={() => setCategory(TxnCategory.Expense)}>
           Expense
         </Button>
-        <Button outline={category != ExpenseCategory.Income}
+        <Button outline={category != TxnCategory.Income}
           color='success'
-          onClick={() => setCategory(ExpenseCategory.Income)}>
+          onClick={() => setCategory(TxnCategory.Income)}>
           Income
         </Button>
       </ButtonGroup>
@@ -88,11 +88,11 @@ export default function DataEntryForm() {
     </FormGroup>
     <FormGroup>
       <Label>
-        {category == ExpenseCategory.Expense ? 'Expense Type' : 'Income Type'}
+        {category == TxnCategory.Expense ? 'Expense Type' : 'Income Type'}
       </Label>
       <Dropdown name="type"
         selectedValue={typeId}
-        items={category == ExpenseCategory.Expense ? expenseListItems : incomeListItems}
+        items={category == TxnCategory.Expense ? expenseListItems : incomeListItems}
         onChange={(val => setType(val))}
         placeholder="Select a type" />
     </FormGroup>

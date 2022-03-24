@@ -1,4 +1,4 @@
-export enum ExpenseCategory {
+export enum TxnCategory {
   Expense = 0,
   Income = 1
 }
@@ -18,7 +18,7 @@ export interface Transaction {
   category: number;
   typeId: string;
   type: string;
-  date: Date;
+  date: string;
   description: string;
   projectId: string;
   projectName: string;

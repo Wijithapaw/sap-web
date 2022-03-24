@@ -73,5 +73,6 @@ export const { } = financeSlice.actions;
 export const projectsSelector = (state: RootState) => state.finance.projects;
 export const incomeTypesSelector = (state: RootState) => state.finance.incomeTypes;
 export const expenseTypesSelector = (state: RootState) => state.finance.expenseTypes;
+export const transactionsSelector = (state: RootState) => state.finance.transactions;
 
 export default financeSlice.reducer;

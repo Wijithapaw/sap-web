@@ -16,12 +16,13 @@ const options: ListItem[] = [{
 }]
 
 interface Props {
+  initialValues?: string[];
   options: ListItem[];
   onSelect: (selectedIds: string[]) => void;
 }
 
-export default function MultiSelectDropdown({ options, onSelect }: Props) {
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+export default function MultiSelectDropdown({ initialValues, options, onSelect }: Props) {
+  const [selectedIds, setSelectedIds] = useState<string[]>(initialValues || []);
 
   useEffect(() => {
     onSelect(selectedIds);
@@ -29,6 +30,7 @@ export default function MultiSelectDropdown({ options, onSelect }: Props) {
 
   return <Multiselect
     options={options}
+    selectedValues={options.filter(o => selectedIds.includes(o.key))}
     onSelect={(a, b) => {
       setSelectedIds([...selectedIds, b.key])
     }}

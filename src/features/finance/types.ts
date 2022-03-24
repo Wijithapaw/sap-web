@@ -30,7 +30,7 @@ export interface Transaction {
 
 export interface TransactionFilter {
   projects: string[];
-  fromDate: string;
-  toDate: string;
+  fromDate?: string;
+  toDate?: string;
   searchTerm?: string;
 }

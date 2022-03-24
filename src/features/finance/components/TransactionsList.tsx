@@ -54,7 +54,7 @@ export default function TransacationList() {
           const expense = props.row.values.category == TxnCategory.Expense
           return <div className={expense ? 'text-danger' : 'text-success'} style={{ textAlign: "right" }}>
             <span>{expense ? '-' : '+'}</span>
-            {toCurrency(props.value)} </div>
+            {toCurrency(Math.abs(props.value))} </div>
         }
       },
     ],

@@ -15,6 +15,7 @@ import ReportsPage from './features/finance/components/ReportsPage';
 
 function App() {
   const user = useAppSelector(selectAuthUser);
+  const initialized = useAppSelector((state) => state.auth.initialized);
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -35,6 +36,8 @@ function App() {
 
     dispatch(authInitialize());
   }, [])
+
+  if(!initialized) return null;
 
   return (
     <>

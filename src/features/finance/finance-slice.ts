@@ -1,5 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { access } from "fs";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { ListItem } from "../../app/types";
 import { fetchExpenseTypes, fetchIncomeTypes, fetchProjects, fetchTransactions } from "./finance-api";
@@ -10,6 +9,7 @@ export interface FinanceState {
   expenseTypes: ListItem[];
   incomeTypes: ListItem[];
   transactions: Transaction[];
+  txnFilter: TransactionFilter;
 }
 
 const initialState: FinanceState = {
@@ -17,6 +17,11 @@ const initialState: FinanceState = {
   expenseTypes: [],
   incomeTypes: [],
   transactions: [],
+  txnFilter: {
+    projects: [],
+    fromDate: '',
+    toDate: '',
+  }
 }
 
 export const fetchProjectsAsync = createAsyncThunk(
@@ -54,7 +59,18 @@ export const fetchTransactionsAsync = createAsyncThunk(
 export const financeSlice = createSlice({
   name: 'finance',
   initialState,
-  reducers: {},
+  reducers: {
+    setTxnFilterFromDate: (state, action: PayloadAction<string>) => {
+      console.log(action.payload);      
+      state.txnFilter = {...state.txnFilter, fromDate: action.payload}
+    },
+    setTxnFilterToDate: (state, action: PayloadAction<string>) => {
+      state.txnFilter.toDate = action.payload
+    },
+    setTxnFilterProjects: (state, action: PayloadAction<string[]>) => {
+      state.txnFilter.projects = action.payload
+    }
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchProjectsAsync.fulfilled, (state, action) => {
       state.projects = action.payload;
@@ -68,11 +84,12 @@ export const financeSlice = createSlice({
   }
 });
 
-export const { } = financeSlice.actions;
+export const { setTxnFilterFromDate, setTxnFilterProjects, setTxnFilterToDate } = financeSlice.actions;
 
 export const projectsSelector = (state: RootState) => state.finance.projects;
 export const incomeTypesSelector = (state: RootState) => state.finance.incomeTypes;
 export const expenseTypesSelector = (state: RootState) => state.finance.expenseTypes;
 export const transactionsSelector = (state: RootState) => state.finance.transactions;
+export const txnFilterSelector = (state: RootState) => state.finance.txnFilter;
 
 export default financeSlice.reducer;

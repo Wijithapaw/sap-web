@@ -84,9 +84,7 @@ export const authSlice = createSlice({
 export const { logout, authInitialize } = authSlice.actions;
 
 export const selectAuthUser = (state: RootState) => state.auth.user;
-
 export const authSelector = (state: RootState) => !!state.auth.user;
-
 export const hasPermission = (state: RootState, permission: string) => !!state.auth.user && state.auth.user.permissions.includes(permission)
 
 export default authSlice.reducer;

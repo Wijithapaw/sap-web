@@ -61,53 +61,70 @@ export default function DataEntryForm() {
     setType('');
   }
 
+  const handleTxnCategoryChange = (cat: TxnCategory) => {
+    setCategory(cat);
+    setType('');
+  }
+
   return <Form onSubmit={handleSubmit} onReset={handleReset}>
     <FormGroup>
       <ButtonGroup className='w-100'>
         <Button outline={category != TxnCategory.Expense}
           color='danger'
-          onClick={() => setCategory(TxnCategory.Expense)}>
+          onClick={() => handleTxnCategoryChange(TxnCategory.Expense)}>
           Expense
         </Button>
         <Button outline={category != TxnCategory.Income}
           color='success'
-          onClick={() => setCategory(TxnCategory.Income)}>
+          onClick={() => handleTxnCategoryChange(TxnCategory.Income)}>
           Income
         </Button>
       </ButtonGroup>
     </FormGroup>
-    <FormGroup>
-      <Label>
-        Project
-      </Label>
-      <Dropdown name="projects"
-        items={projectsListItems}
-        selectedValue={projectId}
-        onChange={(val => setProjectId(val))}
-        placeholder="Select a project" />
-    </FormGroup>
-    <FormGroup>
-      <Label>
-        {category == TxnCategory.Expense ? 'Expense Type' : 'Income Type'}
-      </Label>
-      <Dropdown name="type"
-        selectedValue={typeId}
-        items={category == TxnCategory.Expense ? expenseListItems : incomeListItems}
-        onChange={(val => setType(val))}
-        placeholder="Select a type" />
-    </FormGroup>
-    <FormGroup>
-      <Label>
-        Amount
-      </Label>
-      <Input type='number' value={amount} onChange={(e) => setAmount(parseFloat(e.target.value))} />
-    </FormGroup>
-    <FormGroup>
-      <Label>
-        Date
-      </Label>
-      <DateSelect value={date} onChange={setDate} />
-    </FormGroup>
+    <Row>
+      <Col md={6}>
+        <FormGroup>
+          <Label>
+            Project
+          </Label>
+          <Dropdown name="projects"
+            items={projectsListItems}
+            selectedValue={projectId}
+            onChange={(val => setProjectId(val))}
+            placeholder="Select a project" />
+        </FormGroup>
+      </Col>
+      <Col md={6}>
+        <FormGroup>
+          <Label>
+            {category == TxnCategory.Expense ? 'Expense Type' : 'Income Type'}
+          </Label>
+          <Dropdown name="type"
+            selectedValue={typeId}
+            items={category == TxnCategory.Expense ? expenseListItems : incomeListItems}
+            onChange={(val => setType(val))}
+            placeholder="Select a type" />
+        </FormGroup>
+      </Col>
+    </Row>
+    <Row>
+      <Col sm={6}>
+        <FormGroup>
+          <Label>
+            Amount
+          </Label>
+          <Input type='number' value={amount} onChange={(e) => setAmount(parseFloat(e.target.value))} />
+        </FormGroup>
+      </Col>
+      <Col sm={6}>
+        <FormGroup>
+          <Label>
+            Date
+          </Label>
+          <DateSelect value={date} onChange={setDate} />
+        </FormGroup>
+      </Col>
+    </Row>
     <FormGroup>
       <Label>
         Description
@@ -116,13 +133,19 @@ export default function DataEntryForm() {
         value={description}
         onChange={(e) => setDesc(e.target.value)} />
     </FormGroup>
-    <FormGroup>
-      <Button type='reset' className='mr-4'>Cancel</Button>{" "}
-      <Button className='ml-2' type='submit' color='primary'>Save</Button>
-    </FormGroup>
-    <FormGroup>
-      {successMsg && <Alert color='success'>{successMsg}</Alert>}
-      {errorMsg && <Alert color='danger'>{errorMsg}</Alert>}
-    </FormGroup>
+    <Row>
+      <Col md={4}>
+        <FormGroup>
+          <Button type='reset' className='mr-4'>Cancel</Button>{" "}
+          <Button className='ml-2' type='submit' color='primary'>Save</Button>
+        </FormGroup>
+      </Col>
+      <Col md={8}>
+        <FormGroup>
+          {successMsg && <Alert className='p-2' color='success'>{successMsg}</Alert>}
+          {errorMsg && <Alert className='p-2' color='danger'>{errorMsg}</Alert>}
+        </FormGroup>
+      </Col>
+    </Row>
   </Form>
 }

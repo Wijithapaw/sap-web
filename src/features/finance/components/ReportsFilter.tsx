@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Button, Card, CardBody, Col, Label, Row } from "reactstrap";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import DateSelect from "../../../components/DateSelect";
 import MultiSelectDropdown from "../../../components/MultiSelectDropdown";
+import { hasPermission } from "../../auth/auth-slice";
 import { fetchTransactionsAsync, projectsSelector } from "../finance-slice";
 import { TransactionFilter } from "../types";
+import { Permissions } from '../../../app/constants';
 
 function dateMonthsAgo(months: number) {
   var d = new Date();
@@ -18,6 +20,16 @@ export default function ReportsFilter() {
   const [toDate, setToDate] = useState(new Date());
 
   const projectsList = useAppSelector(projectsSelector);
+  const hasAllProjectPermission = useAppSelector((state) => hasPermission(state, Permissions.projectsFullAccess))
+
+  const projectsOptions = useMemo(() => {
+    const projs = [...projectsList]
+    if (hasAllProjectPermission) {
+      projs.splice(0, 0, { key: "*", value: "All Projects" })
+    }
+    console.log('projects list build');   
+    return projs;
+  }, [])
 
   const dispatch = useAppDispatch();
 
@@ -25,7 +37,7 @@ export default function ReportsFilter() {
     const filter: TransactionFilter = {
       projects,
       fromDate: fromDate.toLocaleDateString('en-CA'),
-      toDate : toDate.toLocaleDateString('en-CA'),
+      toDate: toDate.toLocaleDateString('en-CA'),
     };
     dispatch(fetchTransactionsAsync(filter));
   }
@@ -35,7 +47,7 @@ export default function ReportsFilter() {
       <Row>
         <Col>
           <Label>Projects</Label>
-          <MultiSelectDropdown options={projectsList} onSelect={setProjects} />
+          <MultiSelectDropdown options={projectsOptions} onSelect={setProjects} />
         </Col>
         <Col sm={3}>
           <Label>From</Label>

@@ -1,9 +1,9 @@
 import React from 'react';
-import { useAppSelector } from '../../../app/hooks';
-import { transactionsSelector } from '../finance-slice';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import { fetchTransactionToEditAsync, transactionsSelector } from '../finance-slice';
 import { useTable, Column } from 'react-table'
 import { Transaction, TxnCategory } from '../types';
-import { Table } from 'reactstrap';
+import { Button, Table } from 'reactstrap';
 import { financeHelpers } from '../helpers';
 
 function toCurrency(amount: number) {
@@ -16,6 +16,7 @@ function formatData(date: string) {
 
 export default function TransacationList() {
   const data = useAppSelector(transactionsSelector);
+  const dispatch = useAppDispatch();
 
   const columns = React.useMemo<Column<Transaction>[]>(
     () => [
@@ -57,9 +58,23 @@ export default function TransacationList() {
             {toCurrency(Math.abs(props.value))} </div>
         }
       },
+      {
+        Header: () => '',
+        accessor: 'id',
+        style: {
+          textAlign: 'center',
+        },
+        Cell: props => {
+          return <div style={{ textAlign: "right" }}><Button size='sm' onClick={() => {
+            dispatch(fetchTransactionToEditAsync(props.value))
+          }}>View</Button></div>
+        }
+      },
     ],
     []
   );
+
+  const fetchEditingTxn = () => { }
 
   const {
     getTableProps,

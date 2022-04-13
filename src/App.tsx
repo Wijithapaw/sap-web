@@ -47,9 +47,6 @@ function App() {
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span className="navbar-toggler-icon"></span></button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-              <AuthGuard permission={Permissions.financialReports}>
-                <li className="nav-item"><Link className="nav-link active" to="/counter">Counter</Link></li>
-              </AuthGuard>
               <AuthGuard>
                 <li className="nav-item"><Link className="nav-link active" to="/data-entry">Data Entry</Link></li>
               </AuthGuard>
@@ -78,7 +75,6 @@ function App() {
       <div className="container">
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/counter" element={<PrivateRoute><Counter /></PrivateRoute>} />
           <Route path="/data-entry" element={<PrivateRoute><DataEntryPage /></PrivateRoute>} />
           <Route path="/reports" element={<PrivateRoute permission={Permissions.financialReports}><ReportsPage /></PrivateRoute>} />
           <Route path="/" element={<Navigate to="/data-entry" />} />

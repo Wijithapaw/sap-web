@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { ListItem } from "../../app/types";
-import { fetchExpenseTypes, fetchIncomeTypes, fetchProjects, fetchTransactions } from "./finance-api";
+import { fetchExpenseTypes, fetchIncomeTypes, fetchProjects, fetchTransactions, fetchTransaction } from "./finance-api";
 import { Transaction, TransactionFilter } from "./types";
 
 export interface FinanceState {
@@ -10,6 +10,7 @@ export interface FinanceState {
   incomeTypes: ListItem[];
   transactions: Transaction[];
   txnFilter: TransactionFilter;
+  editingTxn?: Transaction;
 }
 
 const initialState: FinanceState = {
@@ -56,19 +57,30 @@ export const fetchTransactionsAsync = createAsyncThunk(
   }
 )
 
+export const fetchTransactionToEditAsync = createAsyncThunk(
+  'finance/editxn',
+  async (id: string) => {
+    const types = await fetchTransaction(id);
+    return types;
+  }
+)
+
 export const financeSlice = createSlice({
   name: 'finance',
   initialState,
   reducers: {
     setTxnFilterFromDate: (state, action: PayloadAction<string>) => {
-      console.log(action.payload);      
-      state.txnFilter = {...state.txnFilter, fromDate: action.payload}
+      console.log(action.payload);
+      state.txnFilter = { ...state.txnFilter, fromDate: action.payload }
     },
     setTxnFilterToDate: (state, action: PayloadAction<string>) => {
       state.txnFilter.toDate = action.payload
     },
     setTxnFilterProjects: (state, action: PayloadAction<string[]>) => {
       state.txnFilter.projects = action.payload
+    },
+    clearEditingTransaction: (state) => {
+      state.editingTxn = undefined;
     }
   },
   extraReducers: (builder) => {
@@ -80,6 +92,9 @@ export const financeSlice = createSlice({
       state.expenseTypes = action.payload;
     }).addCase(fetchTransactionsAsync.fulfilled, (state, action) => {
       state.transactions = action.payload;
+    })
+    .addCase(fetchTransactionToEditAsync.fulfilled, (state, action) => {
+      state.editingTxn = action.payload
     })
   }
 });

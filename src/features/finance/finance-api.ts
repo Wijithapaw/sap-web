@@ -21,3 +21,7 @@ export function saveTransaction(data: TransactionInput) {
 export function fetchTransactions(filter: TransactionFilter) {
   return coreApi.get<Transaction[]>('Transactions', filter);
 }
+
+export function fetchTransaction(id: string) {
+  return coreApi.get<Transaction>(`Transactions/${id}`);
+}

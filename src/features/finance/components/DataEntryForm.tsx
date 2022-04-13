@@ -47,6 +47,7 @@ export default function DataEntryForm() {
       typeId,
       reconciled: false
     };
+    
     saveTransaction(txn)
       .then((id) => {
         setMsg('Transaction saved', setSuccessMsg);

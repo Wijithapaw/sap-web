@@ -1,28 +1,56 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Alert, Button, ButtonGroup, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import DateSelect from '../../../components/DateSelect';
+import DateSelect2 from '../../../components/DateSelect2';
 import Dropdown from '../../../components/Dropdown';
-import { saveTransaction } from '../finance-api';
-import { expenseTypesSelector, incomeTypesSelector, projectsSelector } from '../finance-slice';
+import { createTransaction, updateTransaction } from '../finance-api';
+import { clearEditingTransaction, editingTxnSelector, expenseTypesSelector, fetchTransactionToEditAsync, incomeTypesSelector, projectsSelector } from '../finance-slice';
 import { TxnCategory, TransactionInput } from '../types';
+import { dateHelpers } from '../../../app/helpers'
 
-export default function DataEntryForm() {
+interface Props {
+  editingId?: string;
+  onSave?: () => void;
+  onCancel?: () => void;
+}
+
+export default function DataEntryForm({ editingId, onSave, onCancel }: Props) {
   const dispatch = useAppDispatch();
-
-  const [category, setCategory] = useState<TxnCategory>(TxnCategory.Expense)
-  const [amount, setAmount] = useState(0.00);
-  const [date, setDate] = useState(new Date());
-  const [description, setDesc] = useState('');
-  const [typeId, setType] = useState('');
-  const [projectId, setProjectId] = useState('');
-
-  const [errorMsg, setErrorMsg] = useState('');
-  const [successMsg, setSuccessMsg] = useState('');
-
+  const editingTxn = useAppSelector(editingTxnSelector);
   const projectsListItems = useAppSelector(projectsSelector);
   const incomeListItems = useAppSelector(incomeTypesSelector);
   const expenseListItems = useAppSelector(expenseTypesSelector);
+
+  const newTxn = useMemo(() => {
+    const txn: TransactionInput = {
+      category: TxnCategory.Expense,
+      amount: 0.00,
+      date: dateHelpers.toIsoString(new Date()),
+      description: '',
+      typeId: '',
+      projectId: '',
+      reconciled: false
+    };
+    return txn;
+  }, [])
+
+  const [txn, setTxn] = useState({ ...newTxn });
+  const [errorMsg, setErrorMsg] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
+
+  useEffect(() => {
+    return () => {
+      dispatch(clearEditingTransaction());
+    }
+  }, [])
+
+  useEffect(() => {
+    editingId && dispatch(fetchTransactionToEditAsync(editingId))
+  }, [editingId])
+
+  useEffect(() => {
+    editingTxn && setTxn({ ...editingTxn, date: dateHelpers.toIsoString(new Date(editingTxn.date)) })
+  }, [editingTxn])
 
   const setMsg = (msg: string, func: (msg: string) => void) => {
     func(msg);
@@ -31,53 +59,53 @@ export default function DataEntryForm() {
     }, 5000);
   }
 
+  const handleTxnChange = (field: string, value: any) => {
+    const t = { ...txn, [field]: value };
+    setTxn(t);
+  }
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    if (!amount || !typeId || !projectId) {
+    if (!txn.amount || !txn.typeId || !txn.projectId) {
       setMsg('Please fill all the fields', setErrorMsg);
       return;
     }
 
-    const txn: TransactionInput = {
-      projectId,
-      amount,
-      date: date.toLocaleDateString('en-CA'),
-      category,
-      description,
-      typeId,
-      reconciled: false
-    };
-    
-    saveTransaction(txn)
-      .then((id) => {
-        setMsg('Transaction saved', setSuccessMsg);
-        handleReset();
-      })
-      .catch(() => setMsg('Error occurred', setErrorMsg))
+    let promise = undefined;
+    if (editingId) {
+      promise = updateTransaction(editingId, txn);
+    } else {
+      promise = createTransaction(txn);
+    }
+
+    promise.then(() => {
+      setMsg('Transaction saved', setSuccessMsg);
+      !editingId && handleReset();
+      onSave && onSave();
+    }).catch(() => setMsg('Error occurred', setErrorMsg))
   }
 
   const handleReset = () => {
-    setAmount(0.00);
-    setDesc('');
-    setType('');
+    setTxn({ ...txn, amount: 0.00, description: '', typeId: '' });
+    onCancel && onCancel();
   }
 
-  const handleTxnCategoryChange = (cat: TxnCategory) => {
-    setCategory(cat);
-    setType('');
+  const handleCategoryChange = (cat: TxnCategory) => {
+    handleTxnChange('category', cat);
+    handleTxnChange('typeId', '');
   }
 
   return <Form onSubmit={handleSubmit} onReset={handleReset}>
     <FormGroup>
       <ButtonGroup className='w-100'>
-        <Button outline={category != TxnCategory.Expense}
+        <Button outline={txn.category != TxnCategory.Expense}
           color='danger'
-          onClick={() => handleTxnCategoryChange(TxnCategory.Expense)}>
+          onClick={() => {handleCategoryChange(TxnCategory.Expense)}}>
           Expense
         </Button>
-        <Button outline={category != TxnCategory.Income}
+        <Button outline={txn.category != TxnCategory.Income}
           color='success'
-          onClick={() => handleTxnCategoryChange(TxnCategory.Income)}>
+          onClick={() => handleCategoryChange(TxnCategory.Income)}>
           Income
         </Button>
       </ButtonGroup>
@@ -88,22 +116,22 @@ export default function DataEntryForm() {
           <Label>
             Project
           </Label>
-          <Dropdown name="projects"
+          <Dropdown name="projectId"
             items={projectsListItems}
-            selectedValue={projectId}
-            onChange={(val => setProjectId(val))}
+            selectedValue={txn.projectId}
+            onChange={(val => handleTxnChange('projectId', val))}
             placeholder="Select a project" />
         </FormGroup>
       </Col>
       <Col md={6}>
         <FormGroup>
           <Label>
-            {category == TxnCategory.Expense ? 'Expense Type' : 'Income Type'}
+            {txn.category == TxnCategory.Expense ? 'Expense Type' : 'Income Type'}
           </Label>
-          <Dropdown name="type"
-            selectedValue={typeId}
-            items={category == TxnCategory.Expense ? expenseListItems : incomeListItems}
-            onChange={(val => setType(val))}
+          <Dropdown name="typeId"
+            selectedValue={txn.typeId}
+            items={txn.category == TxnCategory.Expense ? expenseListItems : incomeListItems}
+            onChange={(val => handleTxnChange('typeId', val))}
             placeholder="Select a type" />
         </FormGroup>
       </Col>
@@ -114,7 +142,7 @@ export default function DataEntryForm() {
           <Label>
             Amount
           </Label>
-          <Input type='number' value={amount} onChange={(e) => setAmount(parseFloat(e.target.value))} />
+          <Input name='amount' type='number' value={txn.amount} onChange={(e) => handleTxnChange(e.target.name, parseFloat(e.target.value))} />
         </FormGroup>
       </Col>
       <Col sm={6}>
@@ -122,7 +150,7 @@ export default function DataEntryForm() {
           <Label>
             Date
           </Label>
-          <DateSelect value={date} onChange={setDate} />
+          <DateSelect2 value={txn.date} onChange={(val) => handleTxnChange('date', val)} />
         </FormGroup>
       </Col>
     </Row>
@@ -131,8 +159,9 @@ export default function DataEntryForm() {
         Description
       </Label>
       <Input type='textarea'
-        value={description}
-        onChange={(e) => setDesc(e.target.value)} />
+        name='description'
+        value={txn.description}
+        onChange={(e) => handleTxnChange(e.target.name, e.target.value)} />
     </FormGroup>
     <Row>
       <Col md={4}>

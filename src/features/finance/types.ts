@@ -13,17 +13,10 @@ export interface TransactionInput {
   reconciled: boolean;
 }
 
-export interface Transaction {
+export interface Transaction extends TransactionInput {
   id: string;
-  category: number;
-  typeId: string;
   type: string;
-  date: string;
-  description: string;
-  projectId: string;
   projectName: string;
-  amount: number;
-  reconciled: boolean;
   recondiledBy: string;
   recondiledById: string;
 }

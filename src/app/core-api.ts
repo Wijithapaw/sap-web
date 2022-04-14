@@ -5,7 +5,9 @@ axios.defaults.baseURL = process.env.REACT_APP_API_BASE_URL;
 
 export const coreApi = {
   post,
-  get
+  get,
+  put,
+  remove
 }
 
 function getConfig(): AxiosRequestConfig<any> {
@@ -21,8 +23,18 @@ function post<T>(path: string, data: any) {
     .then(r => r.data);
 }
 
+function put<T>(path: string, data: any) {
+  return axios.put<T>(path, data, getConfig())
+    .then(r => r.data);
+}
+
 function get<T>(path: string, queryParams?: any) {
   return axios.get<T>(`${path}${queryParams ? createQueryString(queryParams) : ''}`, getConfig())
+    .then(r => r.data);
+}
+
+function remove<T>(path: string, queryParams?: any) {
+  return axios.delete<T>(`${path}${queryParams ? createQueryString(queryParams) : ''}`, getConfig())
     .then(r => r.data);
 }
 

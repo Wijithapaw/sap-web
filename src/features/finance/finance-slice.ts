@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { ListItem } from "../../app/types";
-import { fetchExpenseTypes, fetchIncomeTypes, fetchProjects, fetchTransactions, fetchTransaction } from "./finance-api";
+import { fetchExpenseTypes, fetchIncomeTypes, fetchProjects, fetchTransactions, fetchTransaction, deleteTransaction } from "./finance-api";
 import { Transaction, TransactionFilter } from "./types";
 
 export interface FinanceState {
@@ -60,8 +60,24 @@ export const fetchTransactionsAsync = createAsyncThunk(
 export const fetchTransactionToEditAsync = createAsyncThunk(
   'finance/editxn',
   async (id: string) => {
-    const types = await fetchTransaction(id);
-    return types;
+    const txn = await fetchTransaction(id);
+    return txn;
+  }
+)
+
+export const updateTransactionInListAsync = createAsyncThunk(
+  'finance/updateTxnInList',
+  async (id: string) => {
+    const txn = await fetchTransaction(id);
+    return txn;
+  }
+)
+
+export const deleteTransactionInListAsync = createAsyncThunk(
+  'finance/deleteTxnInList',
+  async (id: string) => {
+    await deleteTransaction(id);
+    return id;
   }
 )
 
@@ -96,15 +112,30 @@ export const financeSlice = createSlice({
     .addCase(fetchTransactionToEditAsync.fulfilled, (state, action) => {
       state.editingTxn = action.payload
     })
+    .addCase(updateTransactionInListAsync.fulfilled, (state, action) => {
+      const txn = action.payload;
+      const index = state.transactions.findIndex(t => t.id == txn.id);
+      const txns = [...state.transactions];
+      txns.splice(index, 1, txn);
+      state.transactions = txns;
+    })
+    .addCase(deleteTransactionInListAsync.fulfilled, (state, action) => {
+      const txnId = action.payload;
+      const index = state.transactions.findIndex(t => t.id == txnId);
+      const txns = [...state.transactions];
+      txns.splice(index, 1);
+      state.transactions = txns;
+    })
   }
 });
 
-export const { setTxnFilterFromDate, setTxnFilterProjects, setTxnFilterToDate } = financeSlice.actions;
+export const { setTxnFilterFromDate, setTxnFilterProjects, setTxnFilterToDate, clearEditingTransaction } = financeSlice.actions;
 
 export const projectsSelector = (state: RootState) => state.finance.projects;
 export const incomeTypesSelector = (state: RootState) => state.finance.incomeTypes;
 export const expenseTypesSelector = (state: RootState) => state.finance.expenseTypes;
 export const transactionsSelector = (state: RootState) => state.finance.transactions;
 export const txnFilterSelector = (state: RootState) => state.finance.txnFilter;
+export const editingTxnSelector = (state: RootState) => state.finance.editingTxn;
 
 export default financeSlice.reducer;

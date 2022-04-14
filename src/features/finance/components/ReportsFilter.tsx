@@ -20,7 +20,7 @@ export default function ReportsFilter() {
       projs.splice(0, 0, { key: "*", value: "All Projects" })
     }
     return projs;
-  }, [])
+  }, [projectsList])
 
   const dispatch = useAppDispatch();
 

@@ -14,8 +14,12 @@ export function fetchIncomeTypes() {
   return coreApi.get<ListItem[]>('Lookups/Active/ListItems/INCOME_TYPES');
 }
 
-export function saveTransaction(data: TransactionInput) {
+export function createTransaction(data: TransactionInput) {
   return coreApi.post<string>('Transactions', data);
+}
+
+export function updateTransaction(id: string, data: TransactionInput) {
+  return coreApi.put<string>(`Transactions/${id}`, data);
 }
 
 export function fetchTransactions(filter: TransactionFilter) {
@@ -25,3 +29,8 @@ export function fetchTransactions(filter: TransactionFilter) {
 export function fetchTransaction(id: string) {
   return coreApi.get<Transaction>(`Transactions/${id}`);
 }
+
+export function deleteTransaction(id: string) {
+  return coreApi.remove(`Transactions/${id}`);
+}
+

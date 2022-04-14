@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { fetchTransactionToEditAsync, transactionsSelector } from '../finance-slice';
+import { deleteTransactionInListAsync, transactionsSelector, updateTransactionInListAsync } from '../finance-slice';
 import { useTable, Column } from 'react-table'
 import { Transaction, TxnCategory } from '../types';
-import { Button, Table } from 'reactstrap';
+import { Button, Modal, ModalBody, ModalHeader, Table } from 'reactstrap';
 import { financeHelpers } from '../helpers';
+import DataEntryForm from './DataEntryForm';
 
 function toCurrency(amount: number) {
   return amount.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
@@ -17,6 +18,7 @@ function formatData(date: string) {
 export default function TransacationList() {
   const data = useAppSelector(transactionsSelector);
   const dispatch = useAppDispatch();
+  const [editingTxnId, setEditingTxnId] = useState<string>();
 
   const columns = React.useMemo<Column<Transaction>[]>(
     () => [
@@ -65,16 +67,23 @@ export default function TransacationList() {
           textAlign: 'center',
         },
         Cell: props => {
-          return <div style={{ textAlign: "right" }}><Button size='sm' onClick={() => {
-            dispatch(fetchTransactionToEditAsync(props.value))
-          }}>View</Button></div>
+          return <div style={{ textAlign: "right" }}>
+            <Button size='sm' onClick={() => setEditingTxnId(props.value)}>
+              View
+            </Button>
+            <Button className='ms-2' color='danger' size='sm'
+              onClick={() => {
+                if (window.confirm('Are you sure you want to delete this transaction?'))
+                  dispatch(deleteTransactionInListAsync(props.value));
+              }}>
+              Delete
+            </Button>
+          </div>
         }
       },
     ],
     []
   );
-
-  const fetchEditingTxn = () => { }
 
   const {
     getTableProps,
@@ -87,7 +96,7 @@ export default function TransacationList() {
     data
   });
 
-  return (
+  return (<>
     <Table {...getTableProps()}>
       <thead>
         {headerGroups.map(headerGroup => (
@@ -117,5 +126,19 @@ export default function TransacationList() {
         })}
       </tbody>
     </Table>
+    <Modal size='lg' centered
+      isOpen={!!editingTxnId}
+      toggle={() => setEditingTxnId(undefined)}>
+      <ModalHeader toggle={() => setEditingTxnId(undefined)}>Edit Transaction</ModalHeader>
+      <ModalBody>
+        <DataEntryForm editingId={editingTxnId}
+          onSave={() => {
+            dispatch(updateTransactionInListAsync(editingTxnId!))
+            setEditingTxnId(undefined);
+          }}
+          onCancel={() => setEditingTxnId(undefined)} />
+      </ModalBody>
+    </Modal>
+  </>
   )
 }

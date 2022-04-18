@@ -1,6 +1,4 @@
 import React, { useEffect } from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
 import './App.css';
 import { Link, Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import { Login } from './features/auth/components/Login';
@@ -12,6 +10,7 @@ import { Permissions } from './app/constants';
 import DataEntryPage from './features/finance/components/DataEntryPage';
 import { fetchExpenseTypesAsync, fetchIncomeTypesAsync, fetchProjectsAsync } from './features/finance/finance-slice';
 import ReportsPage from './features/finance/components/ReportsPage';
+import UserProfilePage from './features/auth/components/UserProfilePage';
 
 function App() {
   const user = useAppSelector(selectAuthUser);
@@ -31,11 +30,13 @@ function App() {
     dispatch(fetchExpenseTypesAsync());
   }
 
-  useEffect(() => {
-    loadCommonData();
-
+  useEffect(() => {    
     dispatch(authInitialize());
   }, [])
+
+  useEffect(() => {
+    initialized && user && loadCommonData();
+  }, [initialized, user])
 
   if(!initialized) return null;
 
@@ -43,7 +44,7 @@ function App() {
     <>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
         <div className="container">
-          <a className="navbar-brand" href="#">SAP</a>
+          <Link className='navbar-brand' to="/login">SAP</Link>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span className="navbar-toggler-icon"></span></button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
@@ -64,6 +65,7 @@ function App() {
                     {user.email}
                   </a>
                   <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li><Link className="dropdown-item" to="/user/profile">Profile</Link> </li>
                     <li><a className="dropdown-item" href="#" onClick={handleLogout}>Logout</a></li>
                   </ul>
                 </li> : <li className="nav-item"><Link className="nav-link active" to="/login">Login</Link></li>
@@ -77,6 +79,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/data-entry" element={<PrivateRoute><DataEntryPage /></PrivateRoute>} />
           <Route path="/reports" element={<PrivateRoute permission={Permissions.financialReports}><ReportsPage /></PrivateRoute>} />
+          <Route path="/user/profile" element={<PrivateRoute><UserProfilePage /></PrivateRoute>} />
           <Route path="/" element={<Navigate to="/data-entry" />} />
         </Routes>
       </div>

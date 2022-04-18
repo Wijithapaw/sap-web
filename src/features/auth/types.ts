@@ -16,3 +16,15 @@ export interface AuthUser {
   roles: string[];
   permissions: string[];
 }
+
+export interface ChangePasswordDto {
+  currentPwd: string;
+  newPwd: string;
+  newPwdConfirm: string;
+}
+
+
+export interface ChangePasswordResult {
+    succeeded: boolean;
+    errorMessage: string;
+}

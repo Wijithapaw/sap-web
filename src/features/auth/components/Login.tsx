@@ -6,23 +6,24 @@ import { useAppSelector, useAppDispatch } from '../../../app/hooks';
 import { loginAsync, selectAuthUser } from '../auth-slice';
 
 export function Login() {
-  const [username, setUsername] = useState('wijithapaw@gmail.com');
-  const [password, setPassword] = useState('User@123');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectAuthUser);
   const authError = useAppSelector((state) => state.auth.authError);
 
-  const handleLogin = () => {
+  const handleLogin = (e: any) => {
+    e.preventDefault();
     dispatch(loginAsync({ username, password }))
   }
 
   useEffect(() => {
-    if (!!user) navigate("/counter");
+    if (!!user) navigate("/");
   }, [user])
 
-  return <Form className='mt-5' style={{ maxWidth: '400px', margin: '0 auto' }}>
+  return <Form className='mt-5' style={{ maxWidth: '400px', margin: '0 auto' }} onSubmit={handleLogin}>
     <FormGroup className="text-center">
       <h2>Login</h2>
     </FormGroup>
@@ -32,10 +33,10 @@ export function Login() {
     </FormGroup>
     <FormGroup>
       <Label>Password</Label>
-      <Input value={password} onChange={(e) => setPassword(e.target.value)} />
+      <Input type='password' value={password} onChange={(e) => setPassword(e.target.value)} />
     </FormGroup>
     <FormGroup className="text-center">
-      <Button color="primary" onClick={handleLogin}>Login</Button>
+      <Button type='submit' color="primary">Login</Button>
     </FormGroup>
     <FormGroup>
       {authError && <Alert color="danger">Email or Password is incorrect</Alert>}

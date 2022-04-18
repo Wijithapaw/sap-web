@@ -49,7 +49,7 @@ export default function DataEntryForm({ editingId, onSave, onCancel }: Props) {
   }, [editingId])
 
   useEffect(() => {
-    editingTxn && setTxn({ ...editingTxn, date: dateHelpers.toIsoString(new Date(editingTxn.date)) })
+    editingTxn && setTxn({ ...editingTxn, amount: Math.abs(editingTxn.amount), date: dateHelpers.toIsoString(new Date(editingTxn.date)) })
   }, [editingTxn])
 
   const setMsg = (msg: string, func: (msg: string) => void) => {
@@ -90,9 +90,8 @@ export default function DataEntryForm({ editingId, onSave, onCancel }: Props) {
     onCancel && onCancel();
   }
 
-  const handleCategoryChange = (cat: TxnCategory) => {
-    handleTxnChange('category', cat);
-    handleTxnChange('typeId', '');
+  const handleCategoryChange = (category: TxnCategory) => {
+    setTxn({ ...txn, category, typeId: '' });
   }
 
   return <Form onSubmit={handleSubmit} onReset={handleReset}>

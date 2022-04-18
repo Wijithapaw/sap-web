@@ -6,14 +6,7 @@ import { Transaction, TxnCategory } from '../types';
 import { Button, Modal, ModalBody, ModalHeader, Table } from 'reactstrap';
 import { financeHelpers } from '../helpers';
 import DataEntryForm from './DataEntryForm';
-
-function toCurrency(amount: number) {
-  return amount.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
-}
-
-function formatData(date: string) {
-  return new Date(date).toLocaleDateString('en-CA');
-}
+import { currencyHelpers, dateHelpers } from '../../../app/helpers';
 
 export default function TransacationList() {
   const data = useAppSelector(transactionsSelector);
@@ -25,7 +18,7 @@ export default function TransacationList() {
       {
         Header: 'Date',
         accessor: 'date',
-        Cell: props => formatData(props.value)
+        Cell: props => dateHelpers.toIsoString(new Date(props.value))
       },
       {
         Header: 'Project',
@@ -57,7 +50,7 @@ export default function TransacationList() {
           const expense = props.row.values.category == TxnCategory.Expense
           return <div className={expense ? 'text-danger' : 'text-success'} style={{ textAlign: "right" }}>
             <span>{expense ? '-' : '+'}</span>
-            {toCurrency(Math.abs(props.value))} </div>
+            {currencyHelpers.toCurrency(Math.abs(props.value))}</div>
         }
       },
       {

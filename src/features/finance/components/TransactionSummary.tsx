@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { Card, CardBody, Col, Label, Row } from "reactstrap";
+import { currencyHelpers } from "../../../app/helpers";
 import { useAppSelector } from "../../../app/hooks";
 import { transactionsSelector } from "../finance-slice";
 import { TxnCategory } from "../types";
@@ -30,14 +31,14 @@ export default function TransactionSummary() {
     <CardBody className="p-1">
       <Row className="align-items-center">
         <Col>
-          <Label className="text-danger">{`Expenses: ${summary.expenses}`}</Label>
+          <Label className="text-danger">{`Expenses: ${currencyHelpers.toCurrency(summary.expenses)}`}</Label>
         </Col>
         <Col>
-          <Label className="text-success">{`Income: ${summary.income}`}</Label>
+          <Label className="text-success">{`Income: ${currencyHelpers.toCurrency(summary.income)}`}</Label>
         </Col>
         <Col>
           <Label className={summary.profit > 0 ? 'text-success' : 'text-danger'}>
-            {`Profit: ${summary.profit}`}
+            {`Profit: ${currencyHelpers.toCurrency(summary.profit)}`}
           </Label>
         </Col>
       </Row>

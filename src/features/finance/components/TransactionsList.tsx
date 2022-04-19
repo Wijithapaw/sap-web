@@ -34,6 +34,7 @@ export default function TransacationList() {
       {
         Header: 'Type',
         accessor: 'type',
+        Cell: props => <div className={props.row.original.typeCode === 'SHARE_DIVIDEND' ? 'text-primary' : ''}>{props.value}</div>
       },
       {
         Header: 'Description',
@@ -48,7 +49,8 @@ export default function TransacationList() {
         },
         Cell: props => {
           const expense = props.row.values.category == TxnCategory.Expense
-          return <div className={expense ? 'text-danger' : 'text-success'} style={{ textAlign: "right" }}>
+          const shareDividend = props.row.original.typeCode === 'SHARE_DIVIDEND';
+          return <div className={expense ? (shareDividend ? 'text-primary' : 'text-danger') : 'text-success'} style={{ textAlign: "right" }}>
             <span>{expense ? '-' : '+'}</span>
             {currencyHelpers.toCurrency(Math.abs(props.value))}</div>
         }

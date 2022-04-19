@@ -16,6 +16,7 @@ export interface TransactionInput {
 export interface Transaction extends TransactionInput {
   id: string;
   type: string;
+  typeCode: string;
   projectName: string;
   recondiledBy: string;
   recondiledById: string;

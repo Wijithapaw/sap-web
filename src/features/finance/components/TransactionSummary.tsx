@@ -15,6 +15,12 @@ export default function TransactionSummary() {
       .filter(tx => tx.category == TxnCategory.Expense)
       .map(t => t.amount)
       .reduce(reducer, 0);
+
+    const shareDividend = txns
+      .filter(tx => tx.category === TxnCategory.Expense && tx.typeCode === 'SHARE_DIVIDEND')
+      .map(t => t.amount)
+      .reduce(reducer, 0);
+
     const income = txns
       .filter(tx => tx.category == TxnCategory.Income)
       .map(t => t.amount)
@@ -22,6 +28,7 @@ export default function TransactionSummary() {
 
     return {
       expenses,
+      shareDividend,
       income,
       profit: income + expenses,
     }
@@ -36,6 +43,11 @@ export default function TransactionSummary() {
         <Col>
           <Label className="text-success">{`Income: ${currencyHelpers.toCurrency(summary.income)}`}</Label>
         </Col>
+        {
+          (summary.shareDividend > 0) && <Col>
+            <Label className="text-primary">{`Share Dividend: ${currencyHelpers.toCurrency(summary.shareDividend)}`}</Label>
+          </Col>
+        }
         <Col>
           <Label className={summary.profit > 0 ? 'text-success' : 'text-danger'}>
             {`Profit: ${currencyHelpers.toCurrency(summary.profit)}`}

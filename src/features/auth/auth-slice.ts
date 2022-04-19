@@ -35,6 +35,7 @@ export const authSlice = createSlice({
   reducers: {
     authInitialize: (state) => {
       const authToken = storageHelper.getValue(storageKeys.authToken);
+
       if (authToken) {
         const authData = extractRolesAndPermission(authToken);
         const permissions = authData["sap/permission"] || [];
@@ -62,11 +63,13 @@ export const authSlice = createSlice({
       })
       .addCase(loginAsync.fulfilled, (state, action) => {
         const { succeeded, email, errorCode, authToken } = action.payload;
-
-        const authData = extractRolesAndPermission(authToken);
-        const permissions = authData["sap/permission"] || [];
-
+      
         if (succeeded) {
+          storageHelper.setValue(storageKeys.authToken, authToken);
+
+          const authData = extractRolesAndPermission(authToken);
+          const permissions = authData["sap/permission"] || [];  
+
           state.user = {
             email,
             roles: [],
@@ -76,6 +79,7 @@ export const authSlice = createSlice({
           state.authError = undefined;
         } else {
           state.authError = errorCode;
+          storageHelper.removeValue(storageKeys.authToken);
         }
       });
   },

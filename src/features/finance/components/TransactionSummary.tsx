@@ -27,8 +27,8 @@ export default function TransactionSummary() {
       .reduce(reducer, 0);
 
     return {
-      expenses,
-      shareDividend,
+      expenses: expenses - shareDividend,
+      shareDividend: Math.abs(shareDividend),
       income,
       profit: income + expenses,
     }
@@ -40,12 +40,19 @@ export default function TransactionSummary() {
         <Col>
           <Label className="text-danger">{`Expenses: ${currencyHelpers.toCurrency(summary.expenses)}`}</Label>
         </Col>
-        <Col>
-          <Label className="text-success">{`Income: ${currencyHelpers.toCurrency(summary.income)}`}</Label>
-        </Col>
         {
-          (summary.shareDividend > 0) && <Col>
-            <Label className="text-primary">{`Share Dividend: ${currencyHelpers.toCurrency(summary.shareDividend)}`}</Label>
+          (summary.shareDividend > 0) ? <>
+            <Col>
+              <Label className="text-success">{`Gross Income: ${currencyHelpers.toCurrency(summary.income)}`}</Label>
+            </Col>
+            <Col>
+              <Label className="text-primary">{`Share Dividend: ${currencyHelpers.toCurrency(summary.shareDividend)}`}</Label>
+            </Col>
+            <Col>
+              <Label className="text-success">{`Net Income: ${currencyHelpers.toCurrency(summary.income - summary.shareDividend)}`}</Label>
+            </Col>
+          </> : <Col>
+            <Label className="text-success">{`Income: ${currencyHelpers.toCurrency(summary.income)}`}</Label>
           </Col>
         }
         <Col>

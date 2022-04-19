@@ -6,7 +6,8 @@ function setValue(key: string, value: string) {
 }
 
 function getValue(key: string) {
-  return localStorage.getItem(`${KEY_PREFIX}_${key}`);
+  const val = localStorage.getItem(`${KEY_PREFIX}_${key}`);
+  return val != null ? val : undefined;
 }
 
 function removeValue(key: string) {

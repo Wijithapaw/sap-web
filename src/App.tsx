@@ -11,6 +11,10 @@ import DataEntryPage from './features/finance/components/DataEntryPage';
 import { fetchExpenseTypesAsync, fetchIncomeTypesAsync, fetchProjectsAsync } from './features/finance/finance-slice';
 import ReportsPage from './features/finance/components/ReportsPage';
 import UserProfilePage from './features/auth/components/UserProfilePage';
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { fas } from "@fortawesome/free-solid-svg-icons";
+
+library.add(fas);
 
 function App() {
   const user = useAppSelector(selectAuthUser);

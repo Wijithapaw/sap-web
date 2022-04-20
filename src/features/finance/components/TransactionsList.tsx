@@ -7,6 +7,7 @@ import { Button, Modal, ModalBody, ModalHeader, Table } from 'reactstrap';
 import { financeHelpers } from '../helpers';
 import DataEntryForm from './DataEntryForm';
 import { currencyHelpers, dateHelpers } from '../../../app/helpers';
+import IconButton from '../../../components/IconButton';
 
 export default function TransacationList() {
   const data = useAppSelector(transactionsSelector);
@@ -63,16 +64,11 @@ export default function TransacationList() {
         },
         Cell: props => {
           return <div style={{ textAlign: "right" }}>
-            <Button size='sm' onClick={() => setEditingTxnId(props.value)}>
-              View
-            </Button>
-            <Button className='ms-2' color='danger' size='sm'
-              onClick={() => {
-                if (window.confirm('Are you sure you want to delete this transaction?'))
-                  dispatch(deleteTransactionInListAsync(props.value));
-              }}>
-              Delete
-            </Button>
+            <IconButton icon='pen' onClick={() => setEditingTxnId(props.value)} />
+            <IconButton className='ms-2 text-danger' icon='trash' onClick={() => {
+              if (window.confirm('Are you sure you want to delete this transaction?'))
+                dispatch(deleteTransactionInListAsync(props.value));
+            }} />
           </div>
         }
       },

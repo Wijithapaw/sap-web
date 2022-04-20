@@ -28,7 +28,7 @@ export function Login() {
       <h2>Login</h2>
     </FormGroup>
     <FormGroup>
-      <Label>Email</Label>
+      <Label>Username</Label>
       <Input value={username} onChange={(e) => setUsername(e.target.value)} />
     </FormGroup>
     <FormGroup>

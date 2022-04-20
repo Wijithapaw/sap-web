@@ -86,7 +86,6 @@ export const financeSlice = createSlice({
   initialState,
   reducers: {
     setTxnFilterFromDate: (state, action: PayloadAction<string>) => {
-      console.log(action.payload);
       state.txnFilter = { ...state.txnFilter, fromDate: action.payload }
     },
     setTxnFilterToDate: (state, action: PayloadAction<string>) => {

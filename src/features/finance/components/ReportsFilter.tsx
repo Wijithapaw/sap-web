@@ -5,8 +5,9 @@ import MultiSelectDropdown from "../../../components/MultiSelectDropdown";
 import { hasPermission } from "../../auth/auth-slice";
 import { fetchTransactionsAsync, projectsSelector, setTxnFilterFromDate, setTxnFilterProjects, setTxnFilterToDate, txnFilterSelector } from "../finance-slice";
 import { Permissions } from '../../../app/constants';
-import DateSelect2 from "../../../components/DateSelect2";
 import TransactionSummary from "./TransactionSummary";
+import DateSelect from "../../../components/DateSelect";
+import { dateHelpers } from "../../../app/helpers";
 
 export default function ReportsFilter() {
   const txnFilter = useAppSelector(txnFilterSelector);
@@ -37,11 +38,13 @@ export default function ReportsFilter() {
         </Col>
         <Col sm={3}>
           <Label>From</Label>
-          <DateSelect2 value={txnFilter.fromDate} onChange={(d) => dispatch(setTxnFilterFromDate(d))} />
+          <DateSelect value={dateHelpers.toDate(txnFilter.fromDate)}
+            onChange={(d) => dispatch(setTxnFilterFromDate(dateHelpers.toIsoString(d)))} />
         </Col>
         <Col sm={3}>
           <Label>To</Label>
-          <DateSelect2 value={txnFilter.toDate} onChange={(d) => dispatch(setTxnFilterToDate(d))} />
+          <DateSelect value={dateHelpers.toDate(txnFilter.toDate)}
+            onChange={(d) => dispatch(setTxnFilterToDate(dateHelpers.toIsoString(d)))} />
         </Col>
       </Row>
       <Row>

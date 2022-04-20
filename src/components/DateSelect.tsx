@@ -1,5 +1,7 @@
 import React from "react";
-import { Input } from "reactstrap";
+import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
 
 interface Props {
   value?: Date;
@@ -7,7 +9,11 @@ interface Props {
 }
 
 export default function DateSelect({ value, onChange }: Props) {
-  return <Input type='date' placeholder="yyyy-MM-dd"
-    value={value && value.toLocaleDateString('en-CA')}
-    onChange={(e) => onChange(new Date(e.target.value))} />
+  return <DatePicker selected={value}
+    locale="au"
+    className="form-control"
+    dateFormat="yyyy-MM-dd"
+    showYearDropdown
+    isClearable
+    onChange={onChange} />
 }

@@ -7,6 +7,7 @@ import { createTransaction, updateTransaction } from '../finance-api';
 import { clearEditingTransaction, editingTxnSelector, expenseTypesSelector, fetchTransactionToEditAsync, incomeTypesSelector, projectsSelector } from '../finance-slice';
 import { TxnCategory, TransactionInput } from '../types';
 import { dateHelpers } from '../../../app/helpers'
+import DateSelect from '../../../components/DateSelect';
 
 interface Props {
   editingId?: string;
@@ -149,7 +150,7 @@ export default function DataEntryForm({ editingId, onSave, onCancel }: Props) {
           <Label>
             Date
           </Label>
-          <DateSelect2 value={txn.date} onChange={(val) => handleTxnChange('date', val)} />
+          <DateSelect value={new Date(txn.date)} onChange={(val) => handleTxnChange('date', dateHelpers.toIsoString(val))} />
         </FormGroup>
       </Col>
     </Row>

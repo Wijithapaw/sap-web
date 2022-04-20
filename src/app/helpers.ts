@@ -1,6 +1,7 @@
 export const dateHelpers = {
   dateMonthsAgo,
-  toIsoString
+  toIsoString,
+  toDate
 }
 
 export const currencyHelpers = {
@@ -13,8 +14,12 @@ function dateMonthsAgo(months: number) {
   return d;
 }
 
-function toIsoString(value: Date) {
-  return value.toLocaleDateString('en-CA')
+function toIsoString(value?: Date) {
+  return value ? value.toLocaleDateString('en-CA') : ''
+}
+
+function toDate(valueStr?: string) {
+  return valueStr ? new Date(valueStr) : undefined;
 }
 
 function toCurrency(amount: number) {

@@ -40,11 +40,13 @@ export const authSlice = createSlice({
         const authData = extractRolesAndPermission(authToken);
         const permissions = authData["sap/permission"] || [];
         const email = authData['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'];
+        const givenName = authData['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'];
 
         state.user = {
           email,
           roles: [],
-          permissions
+          permissions,
+          givenName
         };        
       }
       state.initialized = true;
@@ -69,11 +71,13 @@ export const authSlice = createSlice({
 
           const authData = extractRolesAndPermission(authToken);
           const permissions = authData["sap/permission"] || [];  
+          const givenName = authData['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'];
 
           state.user = {
             email,
             roles: [],
-            permissions
+            permissions,
+            givenName
           };
           state.authInprogress = false;
           state.authError = undefined;

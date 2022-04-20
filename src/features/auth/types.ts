@@ -15,6 +15,7 @@ export interface AuthUser {
   email: string;
   roles: string[];
   permissions: string[];
+  givenName: string;
 }
 
 export interface ChangePasswordDto {

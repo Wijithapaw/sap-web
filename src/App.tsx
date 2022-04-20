@@ -66,7 +66,7 @@ function App() {
                     role="button"
                     data-bs-toggle="dropdown"
                     aria-expanded="false">
-                    {user.email}
+                    {user.givenName}
                   </a>
                   <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                     <li><Link className="dropdown-item" to="/user/profile">Profile</Link> </li>

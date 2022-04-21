@@ -1,4 +1,4 @@
-export const Permissions = {
+export const SapPermissions = {
   lookupsFullAccess: "LOOKUPS_FULL_MANAGE",
   projectsFullAccess: "PROJECTS_FULL_ACCESS",
   transactionEntry: "TRANSACTION_ENTRY",

@@ -7,6 +7,7 @@ export const coreApi = {
   post,
   get,
   put,
+  patch,
   remove
 }
 
@@ -20,6 +21,11 @@ function getConfig(): AxiosRequestConfig<any> {
 
 function post<T>(path: string, data: any) {
   return axios.post<T>(path, data, getConfig())
+    .then(r => r.data);
+}
+
+function patch<T>(path: string, data: any) {
+  return axios.patch<T>(path, data, getConfig())
     .then(r => r.data);
 }
 

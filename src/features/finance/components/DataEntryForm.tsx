@@ -3,11 +3,13 @@ import { Alert, Button, ButtonGroup, Col, Form, FormGroup, Input, Label, Row } f
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import DateSelect2 from '../../../components/DateSelect2';
 import Dropdown from '../../../components/Dropdown';
-import { createTransaction, updateTransaction } from '../finance-api';
-import { clearEditingTransaction, editingTxnSelector, expenseTypesSelector, fetchTransactionToEditAsync, incomeTypesSelector, projectsSelector } from '../finance-slice';
+import { createTransaction, reconcileTransaction, unreconcileTransaction, updateTransaction } from '../finance-api';
+import { clearEditingTransaction, editingTxnSelector, expenseTypesSelector, fetchTransactionToEditAsync, incomeTypesSelector, projectsSelector, updateEditingTransactionAsync } from '../finance-slice';
 import { TxnCategory, TransactionInput } from '../types';
 import { dateHelpers } from '../../../app/helpers'
 import DateSelect from '../../../components/DateSelect';
+import { SapPermissions } from '../../../app/constants';
+import { selectAuthUser } from '../../auth/auth-slice';
 
 interface Props {
   editingId?: string;
@@ -21,6 +23,11 @@ export default function DataEntryForm({ editingId, onSave, onCancel }: Props) {
   const projectsListItems = useAppSelector(projectsSelector);
   const incomeListItems = useAppSelector(incomeTypesSelector);
   const expenseListItems = useAppSelector(expenseTypesSelector);
+  const user = useAppSelector(selectAuthUser);
+
+  const canReconcile = useMemo(() => {
+    return user && user.permissions.includes(SapPermissions.transactionReconcile)
+  }, [user]);
 
   const newTxn = useMemo(() => {
     const txn: TransactionInput = {
@@ -95,12 +102,24 @@ export default function DataEntryForm({ editingId, onSave, onCancel }: Props) {
     setTxn({ ...txn, category, typeId: '' });
   }
 
+  const handleReconcile = (checked: boolean) => {
+    if (!editingId) { 
+      handleTxnChange('reconciled', checked)
+    } else {
+      let promise = checked ? reconcileTransaction(editingId) : unreconcileTransaction(editingId);
+      promise.then(() => {
+        handleTxnChange('reconciled', checked);
+        dispatch(updateEditingTransactionAsync(editingId));
+      });      
+    }
+  }
+
   return <Form onSubmit={handleSubmit} onReset={handleReset}>
     <FormGroup>
       <ButtonGroup className='w-100'>
         <Button outline={txn.category != TxnCategory.Expense}
           color='danger'
-          onClick={() => {handleCategoryChange(TxnCategory.Expense)}}>
+          onClick={() => { handleCategoryChange(TxnCategory.Expense) }}>
           Expense
         </Button>
         <Button outline={txn.category != TxnCategory.Income}
@@ -163,11 +182,26 @@ export default function DataEntryForm({ editingId, onSave, onCancel }: Props) {
         value={txn.description}
         onChange={(e) => handleTxnChange(e.target.name, e.target.value)} />
     </FormGroup>
+    {
+      (canReconcile || editingId) && <FormGroup>
+        <Label>
+          Reconciled
+        </Label>
+        <Input className='ms-2'
+          disabled={!canReconcile}
+          name='reconciled'
+          type='checkbox'
+          checked={txn.reconciled}
+          onChange={(e) => handleReconcile(e.target.checked)} />
+        {txn.reconciled && editingId ? <span className='ms-2'><i>{`(${editingTxn?.reconciledBy})`}</i></span> : ''}
+      </FormGroup>
+    }
     <Row>
       <Col md={4}>
         <FormGroup>
           <Button type='reset' className='mr-4'>Cancel</Button>{" "}
-          <Button className='ml-2' type='submit' color='primary'>Save</Button>
+          <Button className='ml-2' type='submit' 
+            disabled={!!editingId && txn.reconciled} color='primary'>Save</Button>
         </FormGroup>
       </Col>
       <Col md={8}>

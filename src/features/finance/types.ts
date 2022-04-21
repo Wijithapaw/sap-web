@@ -18,8 +18,8 @@ export interface Transaction extends TransactionInput {
   type: string;
   typeCode: string;
   projectName: string;
-  recondiledBy: string;
-  recondiledById: string;
+  reconciledBy: string;
+  reconciledById: string;
 }
 
 export interface TransactionFilter {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { deleteTransactionInListAsync, transactionsSelector, updateTransactionInListAsync } from '../finance-slice';
+import { deleteTransactionInListAsync, transactionsSelector, updateEditingTransactionAsync } from '../finance-slice';
 import { useTable, Column } from 'react-table'
 import { Transaction, TxnCategory } from '../types';
 import { Button, Modal, ModalBody, ModalHeader, Table } from 'reactstrap';
@@ -8,6 +8,7 @@ import { financeHelpers } from '../helpers';
 import DataEntryForm from './DataEntryForm';
 import { currencyHelpers, dateHelpers } from '../../../app/helpers';
 import IconButton from '../../../components/IconButton';
+import SapIcon from '../../../components/SapIcon';
 
 export default function TransacationList() {
   const data = useAppSelector(transactionsSelector);
@@ -28,18 +29,36 @@ export default function TransacationList() {
       {
         Header: 'Category',
         accessor: 'category',
-        Cell: props => <div className={props.row.values.category == TxnCategory.Expense ? 'text-danger' : 'text-success'}>
-          {financeHelpers.getTxnCategoryDisplayTest(props.value)}
-        </div>
-      },
-      {
-        Header: 'Type',
-        accessor: 'type',
-        Cell: props => <div className={props.row.original.typeCode === 'SHARE_DIVIDEND' ? 'text-primary' : ''}>{props.value}</div>
+        Cell: props => {
+          const shareDiv = props.row.original.typeCode === 'SHARE_DIVIDEND';
+          return <div>
+            <span className={props.value == TxnCategory.Expense ? (shareDiv ? 'text-primary' : 'text-danger') : 'text-success'}>
+              {financeHelpers.getTxnCategoryShortDisplayTest(props.value)}
+            </span>
+
+            <span>
+              {` | ${props.row.original.type}`}
+            </span>
+          </div>
+        }
       },
       {
         Header: 'Description',
         accessor: 'description',
+      },
+      {
+        Header: () => <div style={{ textAlign: "center" }}>Reconciled</div>,
+        style: {
+          textAlign: 'center',
+        },
+        accessor: 'reconciled',
+        Cell: props => {          
+          return <div style={{ textAlign: "center" }}>
+            {props.value ? 
+              <SapIcon icon='check' className='text-success' title={props.row.original.reconciledBy} /> : 
+              <SapIcon icon='times' className='text-warning' />}
+            </div>
+        }
       },
       {
         Header: () => <div style={{ textAlign: "right" }}>Amount</div>,
@@ -124,7 +143,7 @@ export default function TransacationList() {
       <ModalBody>
         <DataEntryForm editingId={editingTxnId}
           onSave={() => {
-            dispatch(updateTransactionInListAsync(editingTxnId!))
+            dispatch(updateEditingTransactionAsync(editingTxnId!))
             setEditingTxnId(undefined);
           }}
           onCancel={() => setEditingTxnId(undefined)} />

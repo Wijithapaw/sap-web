@@ -34,3 +34,10 @@ export function deleteTransaction(id: string) {
   return coreApi.remove(`Transactions/${id}`);
 }
 
+export function reconcileTransaction(id: string) {
+  return coreApi.patch<Transaction>(`Transactions/Reconcile/${id}`, undefined);
+}
+
+export function unreconcileTransaction(id: string) {
+  return coreApi.patch<Transaction>(`Transactions/UnReconcile/${id}`, undefined);
+}

@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import MultiSelectDropdown from "../../../components/MultiSelectDropdown";
 import { hasPermission } from "../../auth/auth-slice";
 import { fetchTransactionsAsync, projectsSelector, setTxnFilterFromDate, setTxnFilterProjects, setTxnFilterToDate, txnFilterSelector } from "../finance-slice";
-import { Permissions } from '../../../app/constants';
+import { SapPermissions } from '../../../app/constants';
 import TransactionSummary from "./TransactionSummary";
 import DateSelect from "../../../components/DateSelect";
 import { dateHelpers } from "../../../app/helpers";
@@ -13,7 +13,7 @@ export default function ReportsFilter() {
   const txnFilter = useAppSelector(txnFilterSelector);
 
   const projectsList = useAppSelector(projectsSelector);
-  const hasAllProjectPermission = useAppSelector((state) => hasPermission(state, Permissions.projectsFullAccess))
+  const hasAllProjectPermission = useAppSelector((state) => hasPermission(state, SapPermissions.projectsFullAccess))
 
   const projectsOptions = useMemo(() => {
     const projs = [...projectsList]

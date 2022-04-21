@@ -10,7 +10,6 @@ interface Props {
 
 export default function DateSelect({ value, onChange }: Props) {
   return <DatePicker selected={value}
-    locale="au"
     className="form-control"
     dateFormat="yyyy-MM-dd"
     showYearDropdown

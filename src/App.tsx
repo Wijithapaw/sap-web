@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from './app/hooks';
 import { authInitialize, logout, selectAuthUser } from './features/auth/auth-slice';
 import PrivateRoute from './components/PrivateRoute';
 import AuthGuard from './components/AuthGuard';
-import { Permissions } from './app/constants';
+import { SapPermissions } from './app/constants';
 import DataEntryPage from './features/finance/components/DataEntryPage';
 import { fetchExpenseTypesAsync, fetchIncomeTypesAsync, fetchProjectsAsync } from './features/finance/finance-slice';
 import ReportsPage from './features/finance/components/ReportsPage';
@@ -55,7 +55,7 @@ function App() {
               <AuthGuard>
                 <li className="nav-item"><Link className="nav-link active" to="/data-entry">Data Entry</Link></li>
               </AuthGuard>
-              <AuthGuard permission={Permissions.financialReports}>
+              <AuthGuard permission={SapPermissions.financialReports}>
                 <li className="nav-item"><Link className="nav-link active" to="/reports">Reports</Link></li>
               </AuthGuard>
               {
@@ -82,7 +82,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/data-entry" element={<PrivateRoute><DataEntryPage /></PrivateRoute>} />
-          <Route path="/reports" element={<PrivateRoute permission={Permissions.financialReports}><ReportsPage /></PrivateRoute>} />
+          <Route path="/reports" element={<PrivateRoute permission={SapPermissions.financialReports}><ReportsPage /></PrivateRoute>} />
           <Route path="/user/profile" element={<PrivateRoute><UserProfilePage /></PrivateRoute>} />
           <Route path="/" element={<Navigate to="/data-entry" />} />
         </Routes>

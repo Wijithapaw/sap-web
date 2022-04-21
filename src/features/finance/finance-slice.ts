@@ -65,7 +65,7 @@ export const fetchTransactionToEditAsync = createAsyncThunk(
   }
 )
 
-export const updateTransactionInListAsync = createAsyncThunk(
+export const updateEditingTransactionAsync = createAsyncThunk(
   'finance/updateTxnInList',
   async (id: string) => {
     const txn = await fetchTransaction(id);
@@ -111,12 +111,14 @@ export const financeSlice = createSlice({
     .addCase(fetchTransactionToEditAsync.fulfilled, (state, action) => {
       state.editingTxn = action.payload
     })
-    .addCase(updateTransactionInListAsync.fulfilled, (state, action) => {
+    .addCase(updateEditingTransactionAsync.fulfilled, (state, action) => {
       const txn = action.payload;
       const index = state.transactions.findIndex(t => t.id == txn.id);
       const txns = [...state.transactions];
       txns.splice(index, 1, txn);
       state.transactions = txns;
+
+      if(state.editingTxn) state.editingTxn = {...txn};
     })
     .addCase(deleteTransactionInListAsync.fulfilled, (state, action) => {
       const txnId = action.payload;

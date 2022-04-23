@@ -20,6 +20,10 @@ export interface Transaction extends TransactionInput {
   projectName: string;
   reconciledBy: string;
   reconciledById: string;
+  createdBy: string;
+  lastUpdatedBy: string;
+  createdDateUtc: string;
+  lastUpdatedDateUtc: string;
 }
 
 export interface TransactionFilter {

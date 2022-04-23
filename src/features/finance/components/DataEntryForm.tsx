@@ -103,14 +103,14 @@ export default function DataEntryForm({ editingId, onSave, onCancel }: Props) {
   }
 
   const handleReconcile = (checked: boolean) => {
-    if (!editingId) { 
+    if (!editingId) {
       handleTxnChange('reconciled', checked)
     } else {
       let promise = checked ? reconcileTransaction(editingId) : unreconcileTransaction(editingId);
       promise.then(() => {
         handleTxnChange('reconciled', checked);
         dispatch(updateEditingTransactionAsync(editingId));
-      });      
+      });
     }
   }
 
@@ -200,7 +200,7 @@ export default function DataEntryForm({ editingId, onSave, onCancel }: Props) {
       <Col md={4}>
         <FormGroup>
           <Button type='reset' className='mr-4'>Cancel</Button>{" "}
-          <Button className='ml-2' type='submit' 
+          <Button className='ml-2' type='submit'
             disabled={!!editingId && txn.reconciled} color='primary'>Save</Button>
         </FormGroup>
       </Col>
@@ -210,6 +210,20 @@ export default function DataEntryForm({ editingId, onSave, onCancel }: Props) {
           {errorMsg && <Alert className='p-2' color='danger'>{errorMsg}</Alert>}
         </FormGroup>
       </Col>
-    </Row>
+    </Row>    {
+      editingTxn && <Row>
+        <Col className='text-muted'>
+          <small>
+            <small>
+              <i>
+                {`Created by: ${editingTxn.createdBy} on ${dateHelpers.toDisplayString(editingTxn.createdDateUtc)}`}
+                <span className='ms-2 me-2'>|</span>
+                {`Last Upadated by: ${editingTxn.lastUpdatedBy} on ${dateHelpers.toDisplayString(editingTxn.lastUpdatedDateUtc)}`}
+              </i>
+            </small>
+          </small>
+        </Col>
+      </Row>
+    }
   </Form>
 }

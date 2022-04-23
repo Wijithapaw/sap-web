@@ -1,7 +1,10 @@
+import dayjs from "dayjs";
+
 export const dateHelpers = {
   dateMonthsAgo,
   toIsoString,
-  toDate
+  toDate,
+  toDisplayString,
 }
 
 export const currencyHelpers = {
@@ -20,6 +23,10 @@ function toIsoString(value?: Date) {
 
 function toDate(valueStr?: string) {
   return valueStr ? new Date(valueStr) : undefined;
+}
+
+function toDisplayString(date: string) {
+  return dayjs(date).format("YYYY-MM-DD h:mm a");
 }
 
 function toCurrency(amount: number) {

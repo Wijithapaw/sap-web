@@ -1,5 +1,5 @@
 import { coreApi } from "../../app/core-api";
-import { ListItem } from "../../app/types";
+import { ListItem, PagedResult } from "../../app/types";
 import { Transaction, TransactionFilter, TransactionInput, TransactionSummary } from "./types";
 
 export function fetchProjects() {
@@ -23,7 +23,7 @@ export function updateTransaction(id: string, data: TransactionInput) {
 }
 
 export function fetchTransactions(filter: TransactionFilter) {
-  return coreApi.get<Transaction[]>('Transactions', filter);
+  return coreApi.get<PagedResult<Transaction>>('Transactions', filter);
 }
 
 export function fetchTransactionsSummary(filter: TransactionFilter) {

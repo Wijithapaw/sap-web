@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { ListItem } from "../../app/types";
-import { fetchExpenseTypes, fetchIncomeTypes, fetchProjects, fetchTransactions, fetchTransaction, deleteTransaction, fetchTransactionsSummary } from "./finance-api";
+import { fetchExpenseTypes, fetchIncomeTypes, fetchProjects, fetchTransaction, deleteTransaction, fetchTransactionsSummary, fetchTransactions } from "./finance-api";
 import { Transaction, TransactionFilter, TransactionSummary } from "./types";
 
 export interface FinanceState {
@@ -19,7 +19,7 @@ const initialState: FinanceState = {
   expenseTypes: [],
   incomeTypes: [],
   transactions: [],
-  txnFilter: { projects: [], fromDate: '', toDate: '', },
+  txnFilter: { projects: [], fromDate: '', toDate: '', page: 1, pageSize: 10000 },
   transactionsSummary: { expenses: 0, income: 0, profit: 0, shareDividend: 0 }
 }
 
@@ -111,7 +111,7 @@ export const financeSlice = createSlice({
     }).addCase(fetchExpenseTypesAsync.fulfilled, (state, action) => {
       state.expenseTypes = action.payload;
     }).addCase(fetchTransactionsAsync.fulfilled, (state, action) => {
-      state.transactions = action.payload;
+      state.transactions = action.payload.items;
     }).addCase(fetchTransactionSummaryAsync.fulfilled, (state, action) => {
       state.transactionsSummary = action.payload;
     }).addCase(fetchTransactionToEditAsync.fulfilled, (state, action) => {

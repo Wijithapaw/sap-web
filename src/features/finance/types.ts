@@ -1,3 +1,5 @@
+import { PagedFilter } from "../../app/types";
+
 export enum TxnCategory {
   Expense = 0,
   Income = 1
@@ -26,7 +28,7 @@ export interface Transaction extends TransactionInput {
   lastUpdatedDateUtc: string;
 }
 
-export interface TransactionFilter {
+export interface TransactionFilter extends PagedFilter {
   projects: string[];
   fromDate?: string;
   toDate?: string;

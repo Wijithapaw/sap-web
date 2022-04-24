@@ -32,3 +32,10 @@ export interface TransactionFilter {
   toDate?: string;
   searchTerm?: string;
 }
+
+export interface TransactionSummary {
+  expenses: number;
+  income: number;
+  shareDividend: number;
+  profit: number;
+}

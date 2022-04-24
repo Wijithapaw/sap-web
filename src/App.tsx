@@ -9,7 +9,7 @@ import AuthGuard from './components/AuthGuard';
 import { SapPermissions } from './app/constants';
 import DataEntryPage from './features/finance/components/DataEntryPage';
 import { fetchExpenseTypesAsync, fetchIncomeTypesAsync, fetchProjectsAsync } from './features/finance/finance-slice';
-import ReportsPage from './features/finance/components/ReportsPage';
+import TransactionPage from './features/finance/components/TransactionPage';
 import UserProfilePage from './features/auth/components/UserProfilePage';
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
@@ -82,7 +82,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/data-entry" element={<PrivateRoute><DataEntryPage /></PrivateRoute>} />
-          <Route path="/reports" element={<PrivateRoute permission={SapPermissions.financialReports}><ReportsPage /></PrivateRoute>} />
+          <Route path="/reports" element={<PrivateRoute permission={SapPermissions.financialReports}><TransactionPage /></PrivateRoute>} />
           <Route path="/user/profile" element={<PrivateRoute><UserProfilePage /></PrivateRoute>} />
           <Route path="/" element={<Navigate to="/data-entry" />} />
         </Routes>

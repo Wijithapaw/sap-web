@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { deleteTransactionInListAsync, transactionsSelector, updateEditingTransactionAsync } from '../finance-slice';
+import { fetchTransactionSummaryAsync, removeTransactionFromList, transactionsSelector, txnFilterSelector, updateEditingTransactionAsync } from '../finance-slice';
 import { useTable, Column } from 'react-table'
 import { Transaction, TxnCategory } from '../types';
 import { Button, Modal, ModalBody, ModalHeader, Table } from 'reactstrap';
@@ -9,11 +9,20 @@ import DataEntryForm from './DataEntryForm';
 import { currencyHelpers, dateHelpers } from '../../../app/helpers';
 import IconButton from '../../../components/IconButton';
 import SapIcon from '../../../components/SapIcon';
+import { deleteTransaction } from '../finance-api';
 
 export default function TransacationList() {
   const data = useAppSelector(transactionsSelector);
+  const txnFilter = useAppSelector(txnFilterSelector);
+
   const dispatch = useAppDispatch();
   const [editingTxnId, setEditingTxnId] = useState<string>();
+
+  const handleDeleteTxn = async (id: string) => {
+    await deleteTransaction(id);
+    dispatch(fetchTransactionSummaryAsync(txnFilter));
+    dispatch(removeTransactionFromList(id));
+  };
 
   const columns = React.useMemo<Column<Transaction>[]>(
     () => [
@@ -52,12 +61,12 @@ export default function TransacationList() {
           textAlign: 'center',
         },
         accessor: 'reconciled',
-        Cell: props => {          
+        Cell: props => {
           return <div style={{ textAlign: "center" }}>
-            {props.value ? 
-              <SapIcon icon='check' className='text-success' title={props.row.original.reconciledBy} /> : 
+            {props.value ?
+              <SapIcon icon='check' className='text-success' title={props.row.original.reconciledBy} /> :
               <SapIcon icon='times' className='text-warning' />}
-            </div>
+          </div>
         }
       },
       {
@@ -86,7 +95,7 @@ export default function TransacationList() {
             <IconButton icon='pen' onClick={() => setEditingTxnId(props.value)} />
             <IconButton className='ms-2 text-danger' icon='trash' onClick={() => {
               if (window.confirm('Are you sure you want to delete this transaction?'))
-                dispatch(deleteTransactionInListAsync(props.value));
+                handleDeleteTxn(props.value);
             }} />
           </div>
         }
@@ -144,6 +153,7 @@ export default function TransacationList() {
         <DataEntryForm editingId={editingTxnId}
           onSave={() => {
             dispatch(updateEditingTransactionAsync(editingTxnId!))
+            dispatch(fetchTransactionSummaryAsync(txnFilter));
             setEditingTxnId(undefined);
           }}
           onCancel={() => setEditingTxnId(undefined)} />

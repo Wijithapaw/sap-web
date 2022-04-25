@@ -10,6 +10,7 @@ import { currencyHelpers, dateHelpers } from '../../../app/helpers';
 import IconButton from '../../../components/IconButton';
 import SapIcon from '../../../components/SapIcon';
 import { deleteTransaction } from '../finance-api';
+import { setGlobalError } from '../../../app/core-slice';
 
 export default function TransacationList() {
   const data = useAppSelector(transactionsSelector);
@@ -18,10 +19,14 @@ export default function TransacationList() {
   const dispatch = useAppDispatch();
   const [editingTxnId, setEditingTxnId] = useState<string>();
 
-  const handleDeleteTxn = async (id: string) => {
-    await deleteTransaction(id);
-    dispatch(fetchTransactionSummaryAsync(txnFilter));
-    dispatch(removeTransactionFromList(id));
+  const handleDeleteTxn = (id: string) => {
+    deleteTransaction(id).then(() => {
+      dispatch(fetchTransactionSummaryAsync(txnFilter));
+      dispatch(removeTransactionFromList(id));
+      setEditingTxnId(undefined);
+    }).catch(err => {
+      dispatch(setGlobalError(err.response.data))
+    })
   };
 
   const columns = React.useMemo<Column<Transaction>[]>(
@@ -92,11 +97,12 @@ export default function TransacationList() {
         },
         Cell: props => {
           return <div style={{ textAlign: "right" }}>
-            <IconButton icon='pen' onClick={() => setEditingTxnId(props.value)} />
-            <IconButton className='ms-2 text-danger' icon='trash' onClick={() => {
-              if (window.confirm('Are you sure you want to delete this transaction?'))
-                handleDeleteTxn(props.value);
-            }} />
+            {!props.row.original.reconciled &&
+              <IconButton className='me-2 text-danger' icon='trash' onClick={() => {
+                if (window.confirm('Are you sure you want to delete this transaction?'))
+                  handleDeleteTxn(props.value);
+              }} />}
+            <IconButton icon='eye' onClick={() => setEditingTxnId(props.value)} />
           </div>
         }
       },
@@ -156,7 +162,10 @@ export default function TransacationList() {
             dispatch(fetchTransactionSummaryAsync(txnFilter));
             setEditingTxnId(undefined);
           }}
-          onCancel={() => setEditingTxnId(undefined)} />
+          onCancel={() => setEditingTxnId(undefined)}
+          onDelete={handleDeleteTxn}
+          />
+          
       </ModalBody>
     </Modal>
   </>

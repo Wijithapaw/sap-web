@@ -22,6 +22,7 @@ export interface Transaction extends TransactionInput {
   projectName: string;
   reconciledBy: string;
   reconciledById: string;
+  reconciledDateUtc?: string;
   createdBy: string;
   lastUpdatedBy: string;
   createdDateUtc: string;

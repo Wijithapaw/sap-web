@@ -3,21 +3,23 @@ import { Alert, Button, ButtonGroup, Col, Form, FormGroup, Input, Label, Row } f
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import DateSelect2 from '../../../components/DateSelect2';
 import Dropdown from '../../../components/Dropdown';
-import { createTransaction, reconcileTransaction, unreconcileTransaction, updateTransaction } from '../finance-api';
-import { clearEditingTransaction, editingTxnSelector, expenseTypesSelector, fetchTransactionToEditAsync, incomeTypesSelector, projectsSelector, updateEditingTransactionAsync } from '../finance-slice';
+import { createTransaction, deleteTransaction, reconcileTransaction, unreconcileTransaction, updateTransaction } from '../finance-api';
+import { clearEditingTransaction, editingTxnSelector, expenseTypesSelector, fetchTransactionSummaryAsync, fetchTransactionToEditAsync, incomeTypesSelector, projectsSelector, removeTransactionFromList, updateEditingTransactionAsync } from '../finance-slice';
 import { TxnCategory, TransactionInput } from '../types';
 import { dateHelpers } from '../../../app/helpers'
 import DateSelect from '../../../components/DateSelect';
 import { SapPermissions } from '../../../app/constants';
 import { selectAuthUser } from '../../auth/auth-slice';
+import { setGlobalError } from '../../../app/core-slice';
 
 interface Props {
   editingId?: string;
   onSave?: () => void;
   onCancel?: () => void;
+  onDelete?: (id: string) => void;
 }
 
-export default function DataEntryForm({ editingId, onSave, onCancel }: Props) {
+export default function DataEntryForm({ editingId, onSave, onCancel, onDelete }: Props) {
   const dispatch = useAppDispatch();
   const editingTxn = useAppSelector(editingTxnSelector);
   const projectsListItems = useAppSelector(projectsSelector);
@@ -193,14 +195,27 @@ export default function DataEntryForm({ editingId, onSave, onCancel }: Props) {
           type='checkbox'
           checked={txn.reconciled}
           onChange={(e) => handleReconcile(e.target.checked)} />
-        {txn.reconciled && editingId ? <span className='ms-2'><i>{`(${editingTxn?.reconciledBy})`}</i></span> : ''}
+        {txn.reconciled && editingId ? 
+        <span className='ms-2 text-muted'>
+          <small>
+            <small>
+              <i>
+                {`(By: ${editingTxn?.reconciledBy} on ${dateHelpers.toDisplayString(editingTxn?.reconciledDateUtc || '')})`}
+                </i>
+                </small></small></span> : ''}
       </FormGroup>
     }
     <Row>
       <Col md={4}>
         <FormGroup>
-          <Button type='reset' className='mr-4'>Cancel</Button>{" "}
-          <Button className='ml-2' type='submit'
+          <Button type='reset' className='mr-4'>Cancel</Button>
+          {editingTxn && !txn.reconciled &&
+            <Button className='ms-2' color='danger'
+              onClick={() => {
+                if (window.confirm('Are you sure you want to delete this transaction?'))
+                  onDelete && onDelete(editingId!);
+              }} >Delete</Button>}
+          <Button className='ms-2' type='submit'
             disabled={!!editingId && txn.reconciled} color='primary'>Save</Button>
         </FormGroup>
       </Col>
@@ -225,5 +240,5 @@ export default function DataEntryForm({ editingId, onSave, onCancel }: Props) {
         </Col>
       </Row>
     }
-  </Form>
+  </Form >
 }

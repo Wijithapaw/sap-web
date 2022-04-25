@@ -13,6 +13,7 @@ import TransactionPage from './features/finance/components/TransactionPage';
 import UserProfilePage from './features/auth/components/UserProfilePage';
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
+import GlobalError from './components/GlobalError';
 
 library.add(fas);
 
@@ -87,6 +88,7 @@ function App() {
           <Route path="/" element={<Navigate to="/data-entry" />} />
         </Routes>
       </div>
+      <GlobalError />
     </>
   );
 }

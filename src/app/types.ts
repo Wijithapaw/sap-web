@@ -18,3 +18,7 @@ export interface PaginatorData {
   totalPages: number;
   pageSize: number;
 }
+
+export interface Dictionary {
+  [key: string] : string;
+}

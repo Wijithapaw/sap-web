@@ -15,11 +15,11 @@ import { setGlobalError } from '../../../app/core-slice';
 interface Props {
   editingId?: string;
   onSave?: () => void;
-  onCancel?: () => void;
+  onReset?: () => void;
   onDelete?: (id: string) => void;
 }
 
-export default function DataEntryForm({ editingId, onSave, onCancel, onDelete }: Props) {
+export default function DataEntryForm({ editingId, onSave, onReset, onDelete }: Props) {
   const dispatch = useAppDispatch();
   const editingTxn = useAppSelector(editingTxnSelector);
   const projectsListItems = useAppSelector(projectsSelector);
@@ -90,14 +90,22 @@ export default function DataEntryForm({ editingId, onSave, onCancel, onDelete }:
 
     promise.then(() => {
       setMsg('Transaction saved', setSuccessMsg);
-      !editingId && handleReset();
+      !editingId && partialReset();
       onSave && onSave();
     }).catch(() => setMsg('Error occurred', setErrorMsg))
   }
 
   const handleReset = () => {
+    if(editingId && editingTxn) {
+      setTxn({ ...editingTxn, amount: Math.abs(editingTxn.amount), date: dateHelpers.toIsoString(new Date(editingTxn.date)) })
+    } else {
+      setTxn({ ...newTxn });
+    }    
+    onReset && onReset();
+  }
+
+  const partialReset = () => {
     setTxn({ ...txn, amount: 0.00, description: '', typeId: '' });
-    onCancel && onCancel();
   }
 
   const handleCategoryChange = (category: TxnCategory) => {
@@ -116,7 +124,7 @@ export default function DataEntryForm({ editingId, onSave, onCancel, onDelete }:
     }
   }
 
-  return <Form onSubmit={handleSubmit} onReset={handleReset}>
+  return <Form onSubmit={handleSubmit}>
     <FormGroup>
       <ButtonGroup className='w-100'>
         <Button outline={txn.category != TxnCategory.Expense}
@@ -163,7 +171,7 @@ export default function DataEntryForm({ editingId, onSave, onCancel, onDelete }:
           <Label>
             Amount
           </Label>
-          <Input name='amount' type='number' value={txn.amount} onChange={(e) => handleTxnChange(e.target.name, parseFloat(e.target.value))} />
+          <Input name='amount' type='number' value={txn.amount || ''} onChange={(e) => handleTxnChange(e.target.name, parseFloat(e.target.value))} />
         </FormGroup>
       </Col>
       <Col sm={6}>
@@ -208,7 +216,7 @@ export default function DataEntryForm({ editingId, onSave, onCancel, onDelete }:
     <Row>
       <Col md={4}>
         <FormGroup>
-          <Button type='reset' className='mr-4'>Cancel</Button>
+          <Button type='button' className='mr-4' onClick={handleReset}>Reset</Button>
           {editingTxn && !txn.reconciled &&
             <Button className='ms-2' color='danger'
               onClick={() => {

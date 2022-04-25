@@ -160,9 +160,7 @@ export default function TransacationList() {
           onSave={() => {
             dispatch(updateEditingTransactionAsync(editingTxnId!))
             dispatch(fetchTransactionSummaryAsync(txnFilter));
-            setEditingTxnId(undefined);
           }}
-          onCancel={() => setEditingTxnId(undefined)}
           onDelete={handleDeleteTxn}
           />
           

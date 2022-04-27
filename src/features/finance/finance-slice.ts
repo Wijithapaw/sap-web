@@ -21,7 +21,7 @@ const initialState: FinanceState = {
   incomeTypes: [],
   transactions: [],
   totalTxns:0,
-  txnFilter: { projects: [], fromDate: '', toDate: '', page: 1, pageSize: 3 },
+  txnFilter: { projects: [], fromDate: '', toDate: '', page: 1, pageSize: 25 },
   transactionsSummary: { expenses: 0, income: 0, profit: 0, shareDividend: 0 }
 }
 

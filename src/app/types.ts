@@ -4,8 +4,8 @@ export interface ListItem {
 }
 
 export interface PagedFilter {
-  page?: number;
-  pageSize?: number;
+  page: number;
+  pageSize: number;
 }
 
 export interface PagedResult<T> {

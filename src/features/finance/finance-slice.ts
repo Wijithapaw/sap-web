@@ -9,6 +9,7 @@ export interface FinanceState {
   expenseTypes: ListItem[];
   incomeTypes: ListItem[];
   transactions: Transaction[];
+  totalTxns: number;
   txnFilter: TransactionFilter;
   editingTxn?: Transaction;
   transactionsSummary: TransactionSummary;
@@ -19,7 +20,8 @@ const initialState: FinanceState = {
   expenseTypes: [],
   incomeTypes: [],
   transactions: [],
-  txnFilter: { projects: [], fromDate: '', toDate: '', page: 1, pageSize: 10000 },
+  totalTxns:0,
+  txnFilter: { projects: [], fromDate: '', toDate: '', page: 1, pageSize: 3 },
   transactionsSummary: { expenses: 0, income: 0, profit: 0, shareDividend: 0 }
 }
 
@@ -83,14 +85,8 @@ export const financeSlice = createSlice({
   name: 'finance',
   initialState,
   reducers: {
-    setTxnFilterFromDate: (state, action: PayloadAction<string>) => {
-      state.txnFilter = { ...state.txnFilter, fromDate: action.payload }
-    },
-    setTxnFilterToDate: (state, action: PayloadAction<string>) => {
-      state.txnFilter.toDate = action.payload
-    },
-    setTxnFilterProjects: (state, action: PayloadAction<string[]>) => {
-      state.txnFilter.projects = action.payload
+    changeTxnFilter: (state, action: PayloadAction<any>) => {
+      state.txnFilter = { ...state.txnFilter, ...action.payload };
     },
     clearEditingTransaction: (state) => {
       state.editingTxn = undefined;
@@ -112,6 +108,7 @@ export const financeSlice = createSlice({
       state.expenseTypes = action.payload;
     }).addCase(fetchTransactionsAsync.fulfilled, (state, action) => {
       state.transactions = action.payload.items;
+      state.totalTxns = action.payload.total;
     }).addCase(fetchTransactionSummaryAsync.fulfilled, (state, action) => {
       state.transactionsSummary = action.payload;
     }).addCase(fetchTransactionToEditAsync.fulfilled, (state, action) => {
@@ -128,11 +125,9 @@ export const financeSlice = createSlice({
   }
 });
 
-export const { setTxnFilterFromDate,
-  setTxnFilterProjects,
-  setTxnFilterToDate,
+export const { changeTxnFilter,
   clearEditingTransaction,
-  removeTransactionFromList 
+  removeTransactionFromList
 } = financeSlice.actions;
 
 export const projectsSelector = (state: RootState) => state.finance.projects;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { fetchTransactionSummaryAsync, removeTransactionFromList, transactionsSelector, txnFilterSelector, updateEditingTransactionAsync } from '../finance-slice';
+import { changeTxnFilter, fetchTransactionsAsync, fetchTransactionSummaryAsync, removeTransactionFromList, transactionsSelector, txnFilterSelector, updateEditingTransactionAsync } from '../finance-slice';
 import { useTable, Column } from 'react-table'
 import { Transaction, TxnCategory } from '../types';
 import { Button, Modal, ModalBody, ModalHeader, Table } from 'reactstrap';
@@ -11,9 +11,12 @@ import IconButton from '../../../components/IconButton';
 import SapIcon from '../../../components/SapIcon';
 import { deleteTransaction } from '../finance-api';
 import { setGlobalError } from '../../../app/core-slice';
+import SapPaginator from '../../../components/SapPaginator';
+import { RootState } from '../../../app/store';
 
 export default function TransacationList() {
   const data = useAppSelector(transactionsSelector);
+  const totalTxns = useAppSelector((state: RootState) => state.finance.totalTxns);
   const txnFilter = useAppSelector(txnFilterSelector);
 
   const dispatch = useAppDispatch();
@@ -110,6 +113,11 @@ export default function TransacationList() {
     []
   );
 
+  const handlePaginationChange = (name: string, value: any) => {
+    dispatch(changeTxnFilter({ [name]: value }));
+    dispatch(fetchTransactionsAsync({...txnFilter, [name]: value}));
+  }
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -122,7 +130,7 @@ export default function TransacationList() {
   });
 
   return (<>
-    <Table {...getTableProps()}>
+    <Table {...getTableProps()} responsive>
       <thead>
         {headerGroups.map(headerGroup => (
           <tr {...headerGroup.getHeaderGroupProps()}>
@@ -151,6 +159,10 @@ export default function TransacationList() {
         })}
       </tbody>
     </Table>
+    <SapPaginator page={txnFilter.page}
+      total={totalTxns}
+      pageSize={txnFilter.pageSize}
+      onChange={(p) => handlePaginationChange('page', p)} />
     <Modal size='lg' centered
       isOpen={!!editingTxnId}
       toggle={() => setEditingTxnId(undefined)}>
@@ -162,8 +174,8 @@ export default function TransacationList() {
             dispatch(fetchTransactionSummaryAsync(txnFilter));
           }}
           onDelete={handleDeleteTxn}
-          />
-          
+        />
+
       </ModalBody>
     </Modal>
   </>

@@ -29,7 +29,7 @@ export default function TransactionSummary() {
         }
         <Col>
           <Label className={txnSummary.profit > 0 ? 'text-success' : 'text-danger'}>
-            {`Profit: ${currencyHelpers.toCurrency(txnSummary.profit)}`}
+            {`Profit: ${currencyHelpers.toCurrency(txnSummary.profit, true)}`}
           </Label>
         </Col>
       </Row>

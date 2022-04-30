@@ -28,11 +28,11 @@ function toDate(valueStr?: string) {
 }
 
 function toDisplayString(date: string) {
-  return dayjs(date).format("YYYY-MM-DD h:mm a");
+  return dayjs(date).format("DD/MM/YY h:mm a");
 }
 
 function toShortDateString(date: string) {
-  return dayjs(date).format("MM/DD/YY");
+  return dayjs(date).format("DD/MM/YY");
 }
 
 function toIsoString2(date: string) {

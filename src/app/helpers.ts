@@ -5,6 +5,8 @@ export const dateHelpers = {
   toIsoString,
   toDate,
   toDisplayString,
+  toShortDateString,
+  toIsoString2
 }
 
 export const currencyHelpers = {
@@ -27,6 +29,14 @@ function toDate(valueStr?: string) {
 
 function toDisplayString(date: string) {
   return dayjs(date).format("YYYY-MM-DD h:mm a");
+}
+
+function toShortDateString(date: string) {
+  return dayjs(date).format("MM/DD/YY");
+}
+
+function toIsoString2(date: string) {
+  return dayjs(date).format("YYYY-MM-DD");
 }
 
 function toCurrency(amount: number) {

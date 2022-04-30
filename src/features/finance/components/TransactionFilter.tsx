@@ -8,9 +8,11 @@ import { SapPermissions } from '../../../app/constants';
 import TransactionSummary from "./TransactionSummary";
 import DateSelect from "../../../components/DateSelect";
 import { dateHelpers } from "../../../app/helpers";
+import { isMobileSelector } from "../../../app/core-slice";
 
 export default function TransactionFilter() {
   const txnFilter = useAppSelector(txnFilterSelector);
+  const isMobile = useAppSelector(isMobileSelector);
 
   const projectsList = useAppSelector(projectsSelector);
   const hasAllProjectPermission = useAppSelector((state) => hasPermission(state, SapPermissions.projectsFullAccess))
@@ -27,7 +29,7 @@ export default function TransactionFilter() {
 
   const search = () => {
     handleFileterChange('page', 1);
-    dispatch(fetchTransactionsAsync({...txnFilter, page: 1}));
+    dispatch(fetchTransactionsAsync({ ...txnFilter, page: 1 }));
     dispatch(fetchTransactionSummaryAsync(txnFilter));
   }
 
@@ -42,23 +44,23 @@ export default function TransactionFilter() {
           <Label>Projects</Label>
           <MultiSelectDropdown initialValues={txnFilter.projects} options={projectsOptions} onSelect={(p) => handleFileterChange('projects', p)} />
         </Col>
-        <Col sm={3}>
+        <Col md={2}>
           <Label>From</Label>
           <DateSelect value={dateHelpers.toDate(txnFilter.fromDate)}
             onChange={(d) => handleFileterChange('fromDate', dateHelpers.toIsoString(d))} />
         </Col>
-        <Col sm={3} >
+        <Col md={2} >
           <Label>To</Label>
           <DateSelect value={dateHelpers.toDate(txnFilter.toDate)}
             onChange={(d) => handleFileterChange('toDate', dateHelpers.toIsoString(d))} />
         </Col>
       </Row>
       <Row>
-        <Col xs={12} className="mt-2">
+        <Col md={10} className="mt-2">
           <TransactionSummary />
         </Col>
-        <Col className="text-end mt-2">
-          <Button color="primary" onClick={search}>
+        <Col md={2} className="text-end mt-2">
+          <Button color="primary" className={`${isMobile ? 'w-100' : ''}`} onClick={search}>
             Search
           </Button>
         </Col>

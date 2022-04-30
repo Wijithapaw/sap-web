@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Col, Pagination, PaginationItem, PaginationLink, Row } from "reactstrap";
+import { isMobileSelector } from "../app/core-slice";
+import { useAppSelector } from "../app/hooks";
 
 interface PagerData {
   activePage: number;
@@ -22,6 +24,8 @@ interface Props {
 const PAGE_COUNT_SHOWN = 5;
 
 export default function SapPaginator({ page, total, onChange, pageSize }: Props) {
+  const isMobile = useAppSelector(isMobileSelector);
+
   const [pagerConfig, setPagerConfig] = useState<PagerData>({
     activePage: 0,
     hasMoreToLeft: false, 
@@ -82,7 +86,7 @@ export default function SapPaginator({ page, total, onChange, pageSize }: Props)
   if (total == 0) return null;
 
   return <Row>
-    <Col sm={8}>
+    <Col>
       <Pagination>
         <PaginationItem disabled={!pagerConfig.hasMoreToLeft}
           onClick={() => handlePageClick(1)}>
@@ -92,7 +96,7 @@ export default function SapPaginator({ page, total, onChange, pageSize }: Props)
           onClick={() => handlePageClick(pagerConfig.activePage > 1 ? pagerConfig.activePage - 1 : 1)}>
           <PaginationLink previous href="#" />
         </PaginationItem>
-        {pagerConfig.pages.map((val) => <PaginationItem key={`pagination_${val}`} active={pagerConfig.activePage === val}>
+        {!isMobile && pagerConfig.pages.map((val) => <PaginationItem key={`pagination_${val}`} active={pagerConfig.activePage === val}>
           <PaginationLink href="#"
             onClick={() => handlePageClick(val)}>
             {val}
@@ -108,7 +112,7 @@ export default function SapPaginator({ page, total, onChange, pageSize }: Props)
         </PaginationItem>
       </Pagination>
     </Col>
-    <Col className="text-end" sm={4}>
+    <Col className="text-end">
       {`${pagerConfig.pageStart} - ${pagerConfig.pageEnd} [Page ${pagerConfig.activePage} of ${pagerConfig.totalPages}]`}
     </Col>
   </Row>

@@ -10,21 +10,21 @@ export default function TransactionSummary() {
     <CardBody className="p-1">
       <Row className="align-items-center">
         <Col>
-          <Label className="text-danger">{`Expenses: ${currencyHelpers.toCurrency(txnSummary.expenses)}`}</Label>
+          <Label className="text-danger">{`Expenses: ${currencyHelpers.toCurrency(txnSummary.expenses, true)}`}</Label>
         </Col>
         {
-          (txnSummary.shareDividend > 0) ? <>
+          (Math.abs(txnSummary.shareDividend) > 0) ? <>
             <Col>
-              <Label className="text-success">{`Gross Income: ${currencyHelpers.toCurrency(txnSummary.income)}`}</Label>
+              <Label className="text-success">{`Gross Inc: ${currencyHelpers.toCurrency(txnSummary.income, true)}`}</Label>
             </Col>
             <Col>
-              <Label className="text-primary">{`Share Dividend: ${currencyHelpers.toCurrency(txnSummary.shareDividend)}`}</Label>
+              <Label className="text-primary">{`Share Div: ${currencyHelpers.toCurrency(txnSummary.shareDividend, true)}`}</Label>
             </Col>
             <Col>
-              <Label className="text-success">{`Net Income: ${currencyHelpers.toCurrency(txnSummary.income - txnSummary.shareDividend)}`}</Label>
+              <Label className="text-success">{`Net Inc: ${currencyHelpers.toCurrency(txnSummary.income - txnSummary.shareDividend, true)}`}</Label>
             </Col>
           </> : <Col>
-            <Label className="text-success">{`Income: ${currencyHelpers.toCurrency(txnSummary.income)}`}</Label>
+            <Label className="text-success">{`Income: ${currencyHelpers.toCurrency(txnSummary.income, true)}`}</Label>
           </Col>
         }
         <Col>

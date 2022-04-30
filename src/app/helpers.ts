@@ -39,6 +39,7 @@ function toIsoString2(date: string) {
   return dayjs(date).format("YYYY-MM-DD");
 }
 
-function toCurrency(amount: number) {
-  return amount.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+function toCurrency(amount: number, hideDecimals: boolean = false) {
+  if (hideDecimals) amount = Math.round(amount)
+  return amount.toFixed(hideDecimals ? 0: 2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
 }

@@ -14,12 +14,14 @@ import UserProfilePage from './features/auth/components/UserProfilePage';
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import GlobalError from './components/GlobalError';
+import { isMobileSelector, setAppInitialized, setIsMobile } from './app/core-slice';
 
 library.add(fas);
 
 function App() {
   const user = useAppSelector(selectAuthUser);
-  const initialized = useAppSelector((state) => state.auth.initialized);
+  const authInitialized = useAppSelector((state) => state.auth.initialized);
+  const isMobile = useAppSelector(isMobileSelector);
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -35,15 +37,39 @@ function App() {
     dispatch(fetchExpenseTypesAsync());
   }
 
-  useEffect(() => {    
+  useEffect(() => {
     dispatch(authInitialize());
+
+    const isMobile = detectMobile();
+    dispatch(setIsMobile(isMobile));
   }, [])
 
   useEffect(() => {
-    initialized && user && loadCommonData();
-  }, [initialized, user])
+    if (authInitialized && isMobile !== undefined)
+      dispatch(setAppInitialized(true));
+  }, [authInitialize, isMobile])
 
-  if(!initialized) return null;
+  function detectMobile() {
+    const toMatch = [
+      /Android/i,
+      /webOS/i,
+      /iPhone/i,
+      /iPad/i,
+      /iPod/i,
+      /BlackBerry/i,
+      /Windows Phone/i
+    ];
+
+    return toMatch.some((toMatchItem) => {
+      return navigator.userAgent.match(toMatchItem);
+    });
+  }
+
+  useEffect(() => {
+    authInitialized && user && loadCommonData();
+  }, [authInitialized, user])
+
+  if (!authInitialized) return null;
 
   return (
     <>

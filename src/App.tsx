@@ -21,6 +21,7 @@ library.add(fas);
 function App() {
   const user = useAppSelector(selectAuthUser);
   const authInitialized = useAppSelector((state) => state.auth.initialized);
+  const appInitialized = useAppSelector((state) => state.core.appInitialized);
   const isMobile = useAppSelector(isMobileSelector);
 
   const navigate = useNavigate();
@@ -69,7 +70,7 @@ function App() {
     authInitialized && user && loadCommonData();
   }, [authInitialized, user])
 
-  if (!authInitialized) return null;
+  if (!appInitialized) return null;
 
   return (
     <>

@@ -13,6 +13,7 @@ import { deleteTransaction } from '../finance-api';
 import { isMobileSelector, setGlobalError } from '../../../app/core-slice';
 import SapPaginator from '../../../components/SapPaginator';
 import { RootState } from '../../../app/store';
+import SapTable from '../../../components/SapTable';
 
 export default function TransacationList() {
   const data = useAppSelector(transactionsSelector);
@@ -117,48 +118,9 @@ export default function TransacationList() {
     dispatch(changeTxnFilter({ [name]: value }));
     dispatch(fetchTransactionsAsync({ ...txnFilter, [name]: value }));
   }
-
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-  } = useTable({
-    columns,
-    data
-  });
-
+  
   return (<>
-    <Table {...getTableProps()} responsive>
-      <thead>
-        {headerGroups.map(headerGroup => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map(column => (
-              <th {...column.getHeaderProps()}>
-                {column.render('Header')}
-              </th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map(row => {
-          prepareRow(row)
-          return (
-            <tr {...row.getRowProps()}>
-              {row.cells.map(cell => {
-                return (
-                  <td {...cell.getCellProps()}>
-                    {cell.render('Cell')}
-                  </td>
-                )
-              })}
-            </tr>
-          )
-        })}
-      </tbody>
-    </Table>
+    <SapTable data={data} columns={columns} />
     <SapPaginator page={txnFilter.page}
       total={totalTxns}
       pageSize={txnFilter.pageSize}
@@ -175,7 +137,6 @@ export default function TransacationList() {
           }}
           onDelete={handleDeleteTxn}
         />
-
       </ModalBody>
     </Modal>
   </>

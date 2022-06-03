@@ -6,6 +6,7 @@ export const SapPermissions = {
   transactionEntry: "TRANSACTION_ENTRY",
   transactionReconcile: "TRANSACTION_RECONCILE",
   financialReports: "FINANCIAL_REPORTS",
+  adminControl: "ADMIN_CONTROL",
 }
 
 export const ErrorCodes: Dictionary  = {

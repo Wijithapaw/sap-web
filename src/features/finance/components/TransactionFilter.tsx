@@ -1,29 +1,15 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Button, Card, CardBody, Col, Label, Row } from "reactstrap";
+import { Button, Card, CardBody, Col,  Row } from "reactstrap";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import MultiSelectDropdown from "../../../components/MultiSelectDropdown";
-import { hasPermission } from "../../auth/auth-slice";
-import { changeTxnFilter, fetchTransactionsAsync, fetchTransactionSummaryAsync, projectsSelector, txnFilterSelector } from "../finance-slice";
-import { SapPermissions } from '../../../app/constants';
+import { changeTxnFilter, fetchTransactionsAsync, fetchTransactionSummaryAsync, txnFilterSelector } from "../finance-slice";
 import TransactionSummary from "./TransactionSummary";
 import DateSelect from "../../../components/DateSelect";
 import { dateHelpers } from "../../../app/helpers";
 import { isMobileSelector } from "../../../app/core-slice";
+import ProjectsMultiSelect from "../../project/components/ProjectsMultiSelect";
 
 export default function TransactionFilter() {
   const txnFilter = useAppSelector(txnFilterSelector);
   const isMobile = useAppSelector(isMobileSelector);
-
-  const projectsList = useAppSelector(projectsSelector);
-  const hasAllProjectPermission = useAppSelector((state) => hasPermission(state, SapPermissions.projectsFullAccess))
-
-  const projectsOptions = useMemo(() => {
-    const projs = [...projectsList]
-    if (hasAllProjectPermission) {
-      projs.splice(0, 0, { key: "*", value: "All Projects" })
-    }
-    return projs;
-  }, [projectsList])
 
   const dispatch = useAppDispatch();
 
@@ -41,17 +27,15 @@ export default function TransactionFilter() {
     <CardBody>
       <Row>
         <Col>
-          <Label>Projects</Label>
-          <MultiSelectDropdown initialValues={txnFilter.projects} options={projectsOptions} onSelect={(p) => handleFileterChange('projects', p)} />
+          <ProjectsMultiSelect initialValues={txnFilter.projects}
+            onSelect={(p) => handleFileterChange('projects', p)} />
         </Col>
         <Col md={2}>
-          <Label>From</Label>
-          <DateSelect value={dateHelpers.toDate(txnFilter.fromDate)}
+          <DateSelect value={dateHelpers.toDate(txnFilter.fromDate)} placeHolder="From"
             onChange={(d) => handleFileterChange('fromDate', dateHelpers.toIsoString(d))} />
         </Col>
         <Col md={2} >
-          <Label>To</Label>
-          <DateSelect value={dateHelpers.toDate(txnFilter.toDate)}
+          <DateSelect value={dateHelpers.toDate(txnFilter.toDate)} placeHolder="To"
             onChange={(d) => handleFileterChange('toDate', dateHelpers.toIsoString(d))} />
         </Col>
       </Row>

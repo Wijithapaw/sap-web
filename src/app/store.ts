@@ -2,6 +2,7 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import counterReducer from '../features/counter/counterSlice';
 import authReducer from '../features/auth/auth-slice';
 import financeReducer from '../features/finance/finance-slice';
+import worklogReducer from '../features/worklog/worklog-slice';
 import coreReducer from './core-slice';
 
 export const store = configureStore({
@@ -10,6 +11,7 @@ export const store = configureStore({
     counter: counterReducer,
     auth: authReducer,
     finance: financeReducer,
+    worklog: worklogReducer,
   },
 });
 

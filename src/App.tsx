@@ -16,6 +16,7 @@ import { fas } from "@fortawesome/free-solid-svg-icons";
 import GlobalError from './components/GlobalError';
 import { isMobileSelector, setAppInitialized, setIsMobile } from './app/core-slice';
 import AdminPage from './features/admin/components/AdminPage';
+import WorkLogsPage from './features/worklog/components/WorkLogsPage';
 
 library.add(fas);
 
@@ -87,6 +88,7 @@ function App() {
               <AuthGuard permission={SapPermissions.financialReports}>
                 <li className="nav-item"><Link className="nav-link active" to="/reports">Reports</Link></li>
               </AuthGuard>
+              <li className="nav-item"><Link className="nav-link active" to="/work-log">Work Log</Link></li>
               <AuthGuard permission={SapPermissions.adminControl}>
                 <li className="nav-item"><Link className="nav-link active" to="/admin">Admin</Link></li>
               </AuthGuard>
@@ -117,6 +119,7 @@ function App() {
           <Route path="/reports" element={<PrivateRoute permission={SapPermissions.financialReports}><TransactionPage /></PrivateRoute>} />
           <Route path="/user/profile" element={<PrivateRoute><UserProfilePage /></PrivateRoute>} />
           <Route path="/admin" element={<PrivateRoute><AdminPage /></PrivateRoute>} />
+          <Route path="/work-log" element={<WorkLogsPage />} />
           <Route path="/" element={<Navigate to="/data-entry" />} />
         </Routes>
       </div>

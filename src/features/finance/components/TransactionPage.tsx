@@ -1,4 +1,3 @@
-import React from "react";
 import TransactionFilter from "./TransactionFilter";
 import TransacationList from "./TransactionList";
 

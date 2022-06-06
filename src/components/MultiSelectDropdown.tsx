@@ -19,16 +19,17 @@ interface Props {
   initialValues?: string[];
   options: ListItem[];
   onSelect: (selectedIds: string[]) => void;
+  placeHolder?: string;
 }
 
-export default function MultiSelectDropdown({ initialValues, options, onSelect }: Props) {
+export default function MultiSelectDropdown({ initialValues, options, onSelect, placeHolder }: Props) {
   const [selectedIds, setSelectedIds] = useState<string[]>(initialValues || []);
 
   useEffect(() => {
     onSelect(selectedIds);
   }, [selectedIds])
 
-  return <Multiselect
+  return <Multiselect placeholder={placeHolder || 'Select'} hidePlaceholder={!!selectedIds.length}
     options={options}
     selectedValues={options.filter(o => selectedIds.includes(o.key))}
     onSelect={(a, b) => {

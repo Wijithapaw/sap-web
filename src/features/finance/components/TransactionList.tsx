@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { changeTxnFilter, fetchTransactionsAsync, fetchTransactionSummaryAsync, removeTransactionFromList, transactionsSelector, txnFilterSelector, updateEditingTransactionAsync } from '../finance-slice';
-import { useTable, Column } from 'react-table'
+import { Column } from 'react-table'
 import { Transaction, TxnCategory } from '../types';
-import { Button, Modal, ModalBody, ModalHeader, Table } from 'reactstrap';
+import { Modal, ModalBody, ModalHeader, Table } from 'reactstrap';
 import { financeHelpers } from '../helpers';
 import DataEntryForm from './DataEntryForm';
 import { currencyHelpers, dateHelpers } from '../../../app/helpers';
@@ -118,7 +118,7 @@ export default function TransacationList() {
     dispatch(changeTxnFilter({ [name]: value }));
     dispatch(fetchTransactionsAsync({ ...txnFilter, [name]: value }));
   }
-  
+
   return (<>
     <SapTable data={data} columns={columns} />
     <SapPaginator page={txnFilter.page}

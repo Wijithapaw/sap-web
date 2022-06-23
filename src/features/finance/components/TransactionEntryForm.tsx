@@ -1,16 +1,15 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Alert, Button, ButtonGroup, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import DateSelect2 from '../../../components/DateSelect2';
 import Dropdown from '../../../components/Dropdown';
 import { createTransaction, deleteTransaction, reconcileTransaction, unreconcileTransaction, updateTransaction } from '../finance-api';
-import { clearEditingTransaction, editingTxnSelector, expenseTypesSelector, fetchTransactionSummaryAsync, fetchTransactionToEditAsync, incomeTypesSelector, projectsSelector, removeTransactionFromList, updateEditingTransactionAsync } from '../finance-slice';
+import { clearEditingTransaction, editingTxnSelector, expenseTypesSelector, fetchTransactionToEditAsync, incomeTypesSelector, updateEditingTransactionAsync } from '../finance-slice';
 import { TxnCategory, TransactionInput } from '../types';
 import { dateHelpers } from '../../../app/helpers'
 import DateSelect from '../../../components/DateSelect';
 import { SapPermissions } from '../../../app/constants';
 import { selectAuthUser } from '../../auth/auth-slice';
-import { setGlobalError } from '../../../app/core-slice';
+import ProjectSingleSelect from '../../project/components/ProjectSingleSelect';
 
 interface Props {
   editingId?: string;
@@ -19,10 +18,9 @@ interface Props {
   onDelete?: (id: string) => void;
 }
 
-export default function DataEntryForm({ editingId, onSave, onReset, onDelete }: Props) {
+export default function TransactionEntryForm({ editingId, onSave, onReset, onDelete }: Props) {
   const dispatch = useAppDispatch();
   const editingTxn = useAppSelector(editingTxnSelector);
-  const projectsListItems = useAppSelector(projectsSelector);
   const incomeListItems = useAppSelector(incomeTypesSelector);
   const expenseListItems = useAppSelector(expenseTypesSelector);
   const user = useAppSelector(selectAuthUser);
@@ -96,11 +94,11 @@ export default function DataEntryForm({ editingId, onSave, onReset, onDelete }: 
   }
 
   const handleReset = () => {
-    if(editingId && editingTxn) {
+    if (editingId && editingTxn) {
       setTxn({ ...editingTxn, amount: Math.abs(editingTxn.amount), date: dateHelpers.toIsoString(new Date(editingTxn.date)) })
     } else {
       setTxn({ ...newTxn });
-    }    
+    }
     onReset && onReset();
   }
 
@@ -145,11 +143,8 @@ export default function DataEntryForm({ editingId, onSave, onReset, onDelete }: 
           <Label>
             Project
           </Label>
-          <Dropdown name="projectId"
-            items={projectsListItems}
-            selectedValue={txn.projectId}
-            onChange={(val => handleTxnChange('projectId', val))}
-            placeholder="Select a project" />
+          <ProjectSingleSelect selectedValue={txn.projectId}
+            onChange={(val => handleTxnChange('projectId', val))} />
         </FormGroup>
       </Col>
       <Col md={6}>
@@ -203,14 +198,14 @@ export default function DataEntryForm({ editingId, onSave, onReset, onDelete }: 
           type='checkbox'
           checked={txn.reconciled}
           onChange={(e) => handleReconcile(e.target.checked)} />
-        {txn.reconciled && editingId ? 
-        <span className='ms-2 text-muted'>
-          <small>
+        {txn.reconciled && editingId ?
+          <span className='ms-2 text-muted'>
             <small>
-              <i>
-                {`(By: ${editingTxn?.reconciledBy} on ${dateHelpers.toDisplayString(editingTxn?.reconciledDateUtc || '')})`}
+              <small>
+                <i>
+                  {`(By: ${editingTxn?.reconciledBy} on ${dateHelpers.toDisplayString(editingTxn?.reconciledDateUtc || '')})`}
                 </i>
-                </small></small></span> : ''}
+              </small></small></span> : ''}
       </FormGroup>
     }
     <Row>

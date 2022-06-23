@@ -3,9 +3,9 @@ import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { changeTxnFilter, fetchTransactionsAsync, fetchTransactionSummaryAsync, removeTransactionFromList, transactionsSelector, txnFilterSelector, updateEditingTransactionAsync } from '../finance-slice';
 import { Column } from 'react-table'
 import { Transaction, TxnCategory } from '../types';
-import { Modal, ModalBody, ModalHeader, Table } from 'reactstrap';
+import { Modal, ModalBody, ModalHeader } from 'reactstrap';
 import { financeHelpers } from '../helpers';
-import DataEntryForm from './DataEntryForm';
+import TransactionEntryForm from './TransactionEntryForm';
 import { currencyHelpers, dateHelpers } from '../../../app/helpers';
 import IconButton from '../../../components/IconButton';
 import SapIcon from '../../../components/SapIcon';
@@ -130,7 +130,7 @@ export default function TransacationList() {
       toggle={() => setEditingTxnId(undefined)}>
       <ModalHeader toggle={() => setEditingTxnId(undefined)}>Edit Transaction</ModalHeader>
       <ModalBody>
-        <DataEntryForm editingId={editingTxnId}
+        <TransactionEntryForm editingId={editingTxnId}
           onSave={() => {
             dispatch(updateEditingTransactionAsync(editingTxnId!))
             dispatch(fetchTransactionSummaryAsync(txnFilter));

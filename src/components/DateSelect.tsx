@@ -7,14 +7,15 @@ interface Props {
   value?: Date;
   onChange: (value: Date) => void;
   placeHolder?: string;
+  isClearable?: boolean;
 }
 
-export default function DateSelect({ value, onChange, placeHolder }: Props) {
+export default function DateSelect({ value, onChange, placeHolder, isClearable }: Props) {
   return <DatePicker selected={value}
     placeholderText={placeHolder}
     className="form-control"
     dateFormat="yyyy-MM-dd"
     showYearDropdown
-    isClearable
+    isClearable={isClearable}
     onChange={onChange} />
 }

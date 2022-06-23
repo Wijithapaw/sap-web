@@ -31,11 +31,11 @@ export default function TransactionFilter() {
             onSelect={(p) => handleFileterChange('projects', p)} />
         </Col>
         <Col md={2}>
-          <DateSelect value={dateHelpers.toDate(txnFilter.fromDate)} placeHolder="From"
+          <DateSelect value={dateHelpers.toDate(txnFilter.fromDate)} placeHolder="From" isClearable
             onChange={(d) => handleFileterChange('fromDate', dateHelpers.toIsoString(d))} />
         </Col>
         <Col md={2} >
-          <DateSelect value={dateHelpers.toDate(txnFilter.toDate)} placeHolder="To"
+          <DateSelect value={dateHelpers.toDate(txnFilter.toDate)} placeHolder="To" isClearable
             onChange={(d) => handleFileterChange('toDate', dateHelpers.toIsoString(d))} />
         </Col>
       </Row>

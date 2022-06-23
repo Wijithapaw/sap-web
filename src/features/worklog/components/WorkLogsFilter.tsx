@@ -1,11 +1,15 @@
-import { Button, Card, CardBody, Col, Input, Row } from "reactstrap";
+import { useState } from "react";
+import { Button, Card, CardBody, Col, Input, Modal, ModalBody, ModalHeader, Row } from "reactstrap";
 import { dateHelpers } from "../../../app/helpers";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import DateSelect from "../../../components/DateSelect";
 import ProjectsMultiSelect from "../../project/components/ProjectsMultiSelect";
-import { changeWorkLogFilter, searchWorkLogsAsync, worklogFilterSelector } from "../worklog-slice";
+import { changeWorkLogFilter, fetchNewWorkLogAsync, searchWorkLogsAsync, worklogFilterSelector } from "../worklog-slice";
+import WorkLogEntryForm from "./WorkLogEntryForm";
 
 export default function WorkLogsFilter() {
+  const [newWorkLog, setNewWorkLog] = useState(false);
+
   const dispatch = useAppDispatch();
   const worklogFilter = useAppSelector(worklogFilterSelector);
 
@@ -46,10 +50,10 @@ export default function WorkLogsFilter() {
             </Col>
           </Row>
         </Col>
-        <Col xs={2}>
+        <Col md={2} className="pt-1">
           <Row>
             <Col>
-              <Button color="primary" className='w-100'>
+              <Button color="primary" className='w-100' onClick={() => setNewWorkLog(true)}>
                 New
               </Button>
             </Col>
@@ -63,6 +67,12 @@ export default function WorkLogsFilter() {
           </Row>
         </Col>
       </Row>
+      <Modal size="lg" toggle={() => setNewWorkLog(!newWorkLog)} isOpen={newWorkLog}>
+        <ModalHeader toggle={() => setNewWorkLog(!newWorkLog)}>Work Log</ModalHeader>
+        <ModalBody>
+          <WorkLogEntryForm onSave={(id) => dispatch(fetchNewWorkLogAsync(id))} />
+        </ModalBody>
+      </Modal>
     </CardBody>
   </Card>
 }

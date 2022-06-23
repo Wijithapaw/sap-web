@@ -1,14 +1,19 @@
-export interface WorkLog {
-  id: string;
+import { PagedFilter } from "../../app/types";
+
+export interface WorkLogEntry {
   projectId: string;
-  projectName: string;
   labourName: string;
   jobDescription: string;
   date: string;
-  wage: number
+  wage?: number
 }
 
-export interface WorkLogSearch {
+export interface WorkLog extends WorkLogEntry {
+  id: string;
+  projectName: string;
+}
+
+export interface WorkLogSearch extends PagedFilter {
   from?: string;
   to?: string;
   searchTerm: string;

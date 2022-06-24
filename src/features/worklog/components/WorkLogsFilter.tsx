@@ -67,7 +67,7 @@ export default function WorkLogsFilter() {
           </Row>
         </Col>
       </Row>
-      <Modal size="lg" toggle={() => setNewWorkLog(!newWorkLog)} isOpen={newWorkLog}>
+      <Modal size="lg" centered toggle={() => setNewWorkLog(!newWorkLog)} isOpen={newWorkLog}>
         <ModalHeader toggle={() => setNewWorkLog(!newWorkLog)}>Work Log</ModalHeader>
         <ModalBody>
           <WorkLogEntryForm onSave={(id) => dispatch(fetchNewWorkLogAsync(id))} />

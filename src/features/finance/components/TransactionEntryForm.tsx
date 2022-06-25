@@ -188,11 +188,12 @@ export default function TransactionEntryForm({ editingId, onSave, onReset, onDel
         onChange={(e) => handleTxnChange(e.target.name, e.target.value)} />
     </FormGroup>
     {
-      (canReconcile || editingId) && <FormGroup>
-        <Label>
-          Reconciled
+      (canReconcile || editingId) && <FormGroup check>
+        <Label for="chkAutoReconcile">
+          Auto Reconcile
         </Label>
-        <Input className='ms-2'
+        <Input className='me-2'
+          id="chkAutoReconcile"
           disabled={!canReconcile}
           name='reconciled'
           type='checkbox'

@@ -22,3 +22,7 @@ export interface PaginatorData {
 export interface Dictionary {
   [key: string] : string;
 }
+
+export interface IDictionary<T> {
+  [key: string] : T;
+}

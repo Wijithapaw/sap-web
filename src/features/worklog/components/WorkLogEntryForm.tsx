@@ -67,7 +67,9 @@ export default function WorkLogEntryForm({ editingId, onSave, onDelete }: Props)
   }
 
   const handleChangeHtmlInput = (e: ChangeEvent<HTMLInputElement>) => {
-    handleChange(e.target.name, e.target.type === 'number' ? +e.target.value: e.target.value);
+    const type = e.target.type;
+    const value = type === 'number' ? +e.target.value : type === 'checkbox' ? e.target.checked : e.target.value;
+    handleChange(e.target.name, value);
   }
 
   const handleReset = () => {
@@ -112,6 +114,17 @@ export default function WorkLogEntryForm({ editingId, onSave, onDelete }: Props)
         <FormGroup>
           <Label>Wage</Label>
           <Input name="wage" type="number" value={workLog.wage || ''} onChange={handleChangeHtmlInput} />
+        </FormGroup>
+      </Col>
+    </Row>
+    <Row>
+      <Col>
+        <FormGroup check>
+          <Label for="createWageTxnCheck" check>Create Transaction</Label>
+          <Input id="createWageTxnCheck" name="createWageTxn" className="me-2" disabled={!workLog.wage}
+            checked={workLog.createWageTxn || false}
+            type="checkbox"
+            onChange={handleChangeHtmlInput} />
         </FormGroup>
       </Col>
     </Row>

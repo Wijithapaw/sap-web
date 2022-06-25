@@ -5,7 +5,7 @@ import { isMobileSelector } from "../../../app/core-slice";
 import { currencyHelpers, dateHelpers } from "../../../app/helpers";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks"
 import IconButton from "../../../components/IconButton";
-import SapIcon from "../../../components/SapIcon";
+import ReconcileStatus from "../../../components/ReconcileStatus";
 import SapPaginator from "../../../components/SapPaginator";
 import SapTable from "../../../components/SapTable";
 import { WorkLog } from "../types";
@@ -50,10 +50,8 @@ export default function WorkLogsList() {
           accessor: 'wage',
           Cell: props => {
             return <div style={{ textAlign: "right" }}>
-              {props.row.original.wageTxnReconciled === undefined ? props.row.values.wageTxnReconciled : <span className="me-2">
-                {props.row.values.wageTxnReconciled ?
-                  <SapIcon icon='check' className='text-success' title="Reconciled" /> :
-                  <SapIcon icon='times' className='text-warning' title="Not Reconciled" />}
+              {props.row.original.wageTxnId == null ? null : <span className="me-2">
+                <ReconcileStatus reconciled={props.row.original.wageTxnReconciled || false} />
               </span>}
               {props.value && currencyHelpers.toCurrency(Math.abs(props.value)) || ''}</div>
           }

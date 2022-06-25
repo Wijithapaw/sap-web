@@ -8,12 +8,12 @@ import { financeHelpers } from '../helpers';
 import TransactionEntryForm from './TransactionEntryForm';
 import { currencyHelpers, dateHelpers } from '../../../app/helpers';
 import IconButton from '../../../components/IconButton';
-import SapIcon from '../../../components/SapIcon';
 import { deleteTransaction } from '../finance-api';
 import { isMobileSelector, setGlobalError } from '../../../app/core-slice';
 import SapPaginator from '../../../components/SapPaginator';
 import { RootState } from '../../../app/store';
 import SapTable from '../../../components/SapTable';
+import ReconcileStatus from '../../../components/ReconcileStatus';
 
 export default function TransacationList() {
   const data = useAppSelector(transactionsSelector);
@@ -70,9 +70,7 @@ export default function TransacationList() {
           accessor: 'reconciled',
           Cell: props => {
             return <div style={{ textAlign: "center" }}>
-              {props.value ?
-                <SapIcon icon='check' className='text-success' title={props.row.original.reconciledBy} /> :
-                <SapIcon icon='times' className='text-warning' />}
+              <ReconcileStatus reconciled={props.value} reconciledBy={props.row.original.reconciledBy} />
             </div>
           }
         },

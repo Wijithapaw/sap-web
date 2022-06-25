@@ -13,6 +13,7 @@ export interface WorkLog extends WorkLogEntry {
   id: string;
   projectName: string;
   wageTxnReconciled?: boolean;
+  wageTxnId?: string;
 }
 
 export interface WorkLogSearch extends PagedFilter {

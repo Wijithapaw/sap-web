@@ -119,19 +119,22 @@ export default function WorkLogEntryForm({ editingId, onSave, onDelete }: Props)
     </Row>
     <Row>
       <Col>
-        <FormGroup check>
-          <Label for="createWageTxnCheck" check>Create Transaction</Label>
-          <Input id="createWageTxnCheck" name="createWageTxn" className="me-2" disabled={!workLog.wage}
-            checked={workLog.createWageTxn || false}
-            type="checkbox"
-            onChange={handleChangeHtmlInput} />
-        </FormGroup>
+        {
+          editingId ? editingWorklog?.wageTxnId && <FormGroup>{editingWorklog.wageTxnReconciled ? "Wage Transaction Created & Reconciled" : "Wage Transaction Created"}</FormGroup> : <FormGroup check>
+            <Label for="createWageTxnCheck" check>Create Transaction</Label>
+            <Input id="createWageTxnCheck" name="createWageTxn" className="me-2" disabled={!workLog.wage}
+              checked={workLog.createWageTxn || false}
+              type="checkbox"
+              onChange={handleChangeHtmlInput} />
+          </FormGroup>
+        }
       </Col>
     </Row>
     <Row>
       <Col>
         <Button type='button' className='mr-4' onClick={handleReset}>Reset</Button>
-        <Button className='ms-2' type='submit' color='primary'>Save</Button>
+        <Button className='ms-2' type='submit' color='primary'
+          disabled={editingId && editingWorklog?.wageTxnReconciled || false}>Save</Button>
       </Col>
       <Col>
       </Col>

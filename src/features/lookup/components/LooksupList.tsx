@@ -1,17 +1,21 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Column } from "react-table";
-import { Card, CardBody, Col, Row } from "reactstrap";
+import { Button, Card, CardBody, Col, Modal, ModalBody, ModalHeader, Row } from "reactstrap";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import IconButton from "../../../components/IconButton";
 import SapTable from "../../../components/SapTable";
 import { getLookupHeaderAsync, getLookupsByHeaderAsync, lookupHeaderSelector, lookupsSelector } from "../lookup-slice";
 import { Lookup } from "../types";
+import LookupEntryScreenForm from "./LookupEntryForm";
 
 interface Props {
     header: string;
 }
 
 export default function LookupList({ header }: Props) {
+    const [addNew, setAddNew] = useState(false);
+    const [editingId, SetEdititngId] = useState<string>();
+
     const dispatch = useAppDispatch();
 
     const lookupHeader = useAppSelector(lookupHeaderSelector)(header);
@@ -60,11 +64,23 @@ export default function LookupList({ header }: Props) {
             return cols;
         }, []);
 
+    const toggleModal = () => {
+        setAddNew(false);
+        SetEdititngId(undefined);
+    }
+
     return <Card>
         <CardBody>
             <Row>
                 <Col>
                     {lookupHeader && lookupHeader.name}
+                </Col>
+                <Col className="text-end">
+                    <Button color="primary" onClick={() => setAddNew(true)}>Add New</Button>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
                     <hr />
                 </Col>
             </Row>
@@ -73,6 +89,12 @@ export default function LookupList({ header }: Props) {
                     <SapTable data={lookups} columns={columns} />
                 </Col>
             </Row>
+            <Modal size="md" centered toggle={toggleModal} isOpen={addNew || !!editingId}>
+                <ModalHeader toggle={toggleModal}>Work Log</ModalHeader>
+                <ModalBody>
+                    <LookupEntryScreenForm />
+                </ModalBody>
+            </Modal>
         </CardBody>
     </Card>
 }

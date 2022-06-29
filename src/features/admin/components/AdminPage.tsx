@@ -7,8 +7,8 @@ export default function AdminPage() {
     const tabs = useMemo(() => {
         return [
             { id: 'PROJECTS', label: "Projects", component: <ProjectList /> },
-            { id: 'EXPENSE_TYPES', label: "Expense Types", component: <LookupList header="EXPENSE_TYPES"/> },
-            { id: 'INCOME_TYPES', label: "Income Types", component: <LookupList header="INCOME_TYPES" /> }]
+            { id: 'EXPENSE_TYPES', label: "Expense Types", component: <LookupList headerCode="EXPENSE_TYPES"/> },
+            { id: 'INCOME_TYPES', label: "Income Types", component: <LookupList headerCode="INCOME_TYPES" /> }]
     }, []);
 
     const [selectedTab, setSelectedTab] = useState(tabs[0]);

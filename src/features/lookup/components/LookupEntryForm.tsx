@@ -1,14 +1,27 @@
 import { Formik, Field } from 'formik';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
 import * as Yup from 'yup';
 import FormLabel from '../../../components/FormLabel';
+import { createLookup, getLookup, updateLookup } from '../lookup-api';
+import { Lookup, LookupEntry } from '../types';
 
 interface Props {
     editingId?: string;
+    headerId: string;
+    onSave?: (id: string) => void;
 }
 
-export default function LookupEntryScreenForm({ editingId }: Props) {
+export default function LookupEntryScreenForm({ headerId, editingId, onSave }: Props) {
+    const [editingLookup, setEditingLookup] = useState<Lookup>();
+
+    useEffect(() => {
+        editingId && getLookup(editingId).then((lookup) => {
+            console.log(lookup);
+
+            setEditingLookup(lookup);
+        })
+    }, [editingId]);
 
     const validationSchema = useMemo(() => {
         return Yup.object().shape({
@@ -23,16 +36,31 @@ export default function LookupEntryScreenForm({ editingId }: Props) {
         });
     }, [])
 
-return <div>
+    if (editingId && !editingLookup) return null;
+
+    return <div>
         <Formik
             initialValues={{
-                code: '',
-                name: '',
-                active: true
+                code: editingLookup?.code || '',
+                name: editingLookup?.name || '',
+                active: !(editingLookup?.inactive || false)
             }}
             onSubmit={(values, { setSubmitting }) => {
                 setSubmitting(true);
-                console.log(values);
+
+                var entry: LookupEntry = {
+                    code: values.code,
+                    headerId: headerId,
+                    inactive: !values.active,
+                    name: values.name
+                }
+
+                const promise = editingId ? updateLookup(editingId, entry) : createLookup(entry);
+
+                promise.then((id) => {
+                    console.log(editingId ? 'updated' : 'created');
+                    onSave && onSave(editingId || id);
+                });
             }}
             validationSchema={validationSchema}
         >

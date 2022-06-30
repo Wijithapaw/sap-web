@@ -23,6 +23,8 @@ export default function LookupList({ headerCode }: Props) {
     const lookupHeader = useAppSelector(lookupHeaderSelector)(headerCode);
     const lookups = useAppSelector(lookupsSelector)(headerCode);
 
+    const headerName = lookupHeader?.name || '';
+
     useEffect(() => {
         dispatch(getLookupHeaderAsync(headerCode));
     }, [headerCode]);
@@ -68,11 +70,11 @@ export default function LookupList({ headerCode }: Props) {
 
     const handleDelete = (id: string) => {
         deleteLookup(id).then(() => {
-            showNotification(NotificationType.success, 'Lookup deleted');  
-            dispatch(getLookupsByHeaderAsync(lookupHeader));    
+            dispatch(getLookupsByHeaderAsync(lookupHeader)); 
+            showNotification(NotificationType.success, `${headerName} deleted`);                 
         }).catch((err) => {
-            showNotification(NotificationType.error, 'Error in deleting lookup');  
-        })
+            showNotification(NotificationType.error, `Error in deleting ${headerName}`);  
+        });
     }
 
     const toggleModal = () => {
@@ -102,7 +104,7 @@ export default function LookupList({ headerCode }: Props) {
             </Row>
             {lookupHeader &&
                 <Modal size="md" centered toggle={toggleModal} isOpen={addNew || !!editingId}>
-                    <ModalHeader toggle={toggleModal}>{editingId ? 'Update ': 'Create '}Lookup</ModalHeader>
+                    <ModalHeader toggle={toggleModal}>{`${editingId ? 'Update': 'Create'} ${headerName}`}</ModalHeader>
                     <ModalBody>
                         <LookupEntryScreenForm headerId={lookupHeader.id}  editingId={editingId}
                             onSave={(id) => {

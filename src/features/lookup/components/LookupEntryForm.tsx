@@ -46,7 +46,7 @@ export default function LookupEntryScreenForm({ headerId, editingId, onSave }: P
                 name: editingLookup?.name || '',
                 active: !(editingLookup?.inactive || false)
             }}
-            onSubmit={(values, { setSubmitting }) => {
+            onSubmit={(values, { setSubmitting, resetForm }) => {
                 setSubmitting(true);
 
                 var entry: LookupEntry = {
@@ -62,6 +62,7 @@ export default function LookupEntryScreenForm({ headerId, editingId, onSave }: P
                     showNotification(NotificationType.success, `Lookup ${editingId ? 'updated': 'created'}`);
                     onSave && onSave(editingId || id);
                     setSubmitting(false);
+                    !editingId && resetForm();
                 }).catch((err) => {
                     showNotification(NotificationType.error, `Error in Lookup ${editingId ? 'creating': 'updating'}`);
                     setSubmitting(false);

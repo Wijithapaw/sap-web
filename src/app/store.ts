@@ -5,6 +5,7 @@ import financeReducer from '../features/finance/finance-slice';
 import worklogReducer from '../features/worklog/worklog-slice';
 import lookupReducer from '../features/lookup/lookup-slice';
 import coreReducer from './core-slice';
+import projectReducer from '../features/project/project-slice';
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     finance: financeReducer,
     worklog: worklogReducer,
     lookup: lookupReducer,
+    project: projectReducer
   },
 });
 

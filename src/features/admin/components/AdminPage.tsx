@@ -1,12 +1,12 @@
 import { useMemo, useState } from "react";
 import { Col, Nav, NavItem, NavLink, Row } from "reactstrap";
 import LookupList from "../../lookup/components/LooksupList";
-import ProjectList from "../../project/components/ProjectList";
+import ProjectsTab from "../../project/components/ProjectsTab";
 
 export default function AdminPage() {
     const tabs = useMemo(() => {
         return [
-            { id: 'PROJECTS', label: "Projects", component: <ProjectList /> },
+            { id: 'PROJECTS', label: "Projects", component: <ProjectsTab /> },
             { id: 'EXPENSE_TYPES', label: "Expense Types", component: <LookupList header="EXPENSE_TYPES"/> },
             { id: 'INCOME_TYPES', label: "Income Types", component: <LookupList header="INCOME_TYPES" /> }]
     }, []);

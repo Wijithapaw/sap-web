@@ -1,14 +1,28 @@
 import { Formik, Field } from 'formik';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
 import * as Yup from 'yup';
+import { NotificationType, showNotification } from '../../../app/notification-service';
 import FormLabel from '../../../components/FormLabel';
+import { createLookup, getLookup, updateLookup } from '../lookup-api';
+import { Lookup, LookupEntry } from '../types';
 
 interface Props {
     editingId?: string;
+    headerId: string;
+    onSave?: (id: string) => void;
 }
 
-export default function LookupEntryScreenForm({ editingId }: Props) {
+export default function LookupEntryScreenForm({ headerId, editingId, onSave }: Props) {
+    const [editingLookup, setEditingLookup] = useState<Lookup>();
+
+    useEffect(() => {
+        editingId && getLookup(editingId).then((lookup) => {
+            console.log(lookup);
+
+            setEditingLookup(lookup);
+        })
+    }, [editingId]);
 
     const validationSchema = useMemo(() => {
         return Yup.object().shape({
@@ -23,21 +37,41 @@ export default function LookupEntryScreenForm({ editingId }: Props) {
         });
     }, [])
 
-return <div>
+    if (editingId && !editingLookup) return null;
+
+    return <div>
         <Formik
             initialValues={{
-                code: '',
-                name: '',
-                active: true
+                code: editingLookup?.code || '',
+                name: editingLookup?.name || '',
+                active: !(editingLookup?.inactive || false)
             }}
-            onSubmit={(values, { setSubmitting }) => {
+            onSubmit={(values, { setSubmitting, resetForm }) => {
                 setSubmitting(true);
-                console.log(values);
+
+                var entry: LookupEntry = {
+                    code: values.code,
+                    headerId: headerId,
+                    inactive: !values.active,
+                    name: values.name
+                }
+
+                const promise = editingId ? updateLookup(editingId, entry) : createLookup(entry);
+
+                promise.then((id) => {
+                    showNotification(NotificationType.success, `Lookup ${editingId ? 'updated': 'created'}`);
+                    onSave && onSave(editingId || id);
+                    setSubmitting(false);
+                    !editingId && resetForm();
+                }).catch((err) => {
+                    showNotification(NotificationType.error, `Error in Lookup ${editingId ? 'creating': 'updating'}`);
+                    setSubmitting(false);
+                });
             }}
             validationSchema={validationSchema}
         >
             {
-                ({ errors, touched, handleSubmit }) => (
+                ({ errors, touched, handleSubmit, dirty }) => (
                     <Form onSubmit={(e) => {
                         e.preventDefault();
                         handleSubmit();
@@ -55,7 +89,7 @@ return <div>
                             <Field id="chkActive" name="active" type="checkbox" className="me-1 form-check-input" />
                         </FormGroup>
                         <FormGroup>
-                            <Button color='primary' type="submit">Save</Button>
+                            <Button color='primary' type="submit" disabled={!dirty}>Save</Button>
                         </FormGroup>
                     </Form>
                 )

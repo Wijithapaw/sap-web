@@ -26,3 +26,12 @@ export interface Dictionary {
 export interface IDictionary<T> {
   [key: string] : T;
 }
+
+export interface SapNotification {
+  type: NotificationType,
+  message: string;
+  title?: string;
+  id: string;
+}
+
+export enum NotificationType { 'error' , 'success' , 'warning'}

@@ -1,9 +1,12 @@
-export interface Lookup {
-    id: string;
+export interface LookupEntry {
     headerId: string;
     code: string;
     name: string;
     inactive: boolean;
+}
+
+export interface Lookup extends LookupEntry {
+    id: string;
 }
 
 export interface LookupHeader {

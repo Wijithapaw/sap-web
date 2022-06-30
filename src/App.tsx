@@ -17,6 +17,7 @@ import GlobalError from './components/GlobalError';
 import { isMobileSelector, setAppInitialized, setIsMobile } from './app/core-slice';
 import AdminPage from './features/admin/components/AdminPage';
 import WorkLogsPage from './features/worklog/components/WorkLogsPage';
+import SapToast from './components/SapToast';
 
 library.add(fas);
 
@@ -124,6 +125,7 @@ function App() {
         </Routes>
       </div>
       <GlobalError />
+      <SapToast />
     </>
   );
 }

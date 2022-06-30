@@ -2,6 +2,7 @@ import { Formik, Field } from 'formik';
 import { useEffect, useMemo, useState } from 'react';
 import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
 import * as Yup from 'yup';
+import { NotificationType, showNotification } from '../../../app/notification-service';
 import FormLabel from '../../../components/FormLabel';
 import { createLookup, getLookup, updateLookup } from '../lookup-api';
 import { Lookup, LookupEntry } from '../types';
@@ -58,14 +59,18 @@ export default function LookupEntryScreenForm({ headerId, editingId, onSave }: P
                 const promise = editingId ? updateLookup(editingId, entry) : createLookup(entry);
 
                 promise.then((id) => {
-                    console.log(editingId ? 'updated' : 'created');
+                    showNotification(NotificationType.success, `Lookup ${editingId ? 'updated': 'created'}`);
                     onSave && onSave(editingId || id);
+                    setSubmitting(false);
+                }).catch((err) => {
+                    showNotification(NotificationType.error, `Error in Lookup ${editingId ? 'creating': 'updating'}`);
+                    setSubmitting(false);
                 });
             }}
             validationSchema={validationSchema}
         >
             {
-                ({ errors, touched, handleSubmit }) => (
+                ({ errors, touched, handleSubmit, dirty }) => (
                     <Form onSubmit={(e) => {
                         e.preventDefault();
                         handleSubmit();
@@ -83,7 +88,7 @@ export default function LookupEntryScreenForm({ headerId, editingId, onSave }: P
                             <Field id="chkActive" name="active" type="checkbox" className="me-1 form-check-input" />
                         </FormGroup>
                         <FormGroup>
-                            <Button color='primary' type="submit">Save</Button>
+                            <Button color='primary' type="submit" disabled={!dirty}>Save</Button>
                         </FormGroup>
                     </Form>
                 )

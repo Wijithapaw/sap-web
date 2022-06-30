@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Column } from "react-table";
 import { Button, Card, CardBody, Col, Modal, ModalBody, ModalHeader, Row } from "reactstrap";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import { NotificationType, showNotification } from "../../../app/notification-service";
 import IconButton from "../../../components/IconButton";
 import SapTable from "../../../components/SapTable";
 import { deleteLookup } from "../lookup-api";
@@ -15,7 +16,7 @@ interface Props {
 
 export default function LookupList({ headerCode }: Props) {
     const [addNew, setAddNew] = useState(false);
-    const [editingId, SetEdititngId] = useState<string>();
+    const [editingId, setEdititngId] = useState<string>();
 
     const dispatch = useAppDispatch();
 
@@ -56,7 +57,7 @@ export default function LookupList({ headerCode }: Props) {
                                     if (window.confirm('Are you sure you want to delete this transaction?'))
                                         handleDelete(props.value);
                                 }} />}
-                            <IconButton className='ms-2' icon='eye' onClick={() => { SetEdititngId(props.value); }} />
+                            <IconButton className='ms-2' icon='eye' onClick={() => { setEdititngId(props.value); }} />
                         </div>
                     }
                 },
@@ -67,14 +68,16 @@ export default function LookupList({ headerCode }: Props) {
 
     const handleDelete = (id: string) => {
         deleteLookup(id).then(() => {
-            console.log('deleted');        
+            showNotification(NotificationType.success, 'Lookup deleted');  
             dispatch(getLookupsByHeaderAsync(lookupHeader));    
+        }).catch((err) => {
+            showNotification(NotificationType.error, 'Error in deleting lookup');  
         })
     }
 
     const toggleModal = () => {
         setAddNew(false);
-        SetEdititngId(undefined);
+        setEdititngId(undefined);
     }
 
     return <Card>
@@ -99,7 +102,7 @@ export default function LookupList({ headerCode }: Props) {
             </Row>
             {lookupHeader &&
                 <Modal size="md" centered toggle={toggleModal} isOpen={addNew || !!editingId}>
-                    <ModalHeader toggle={toggleModal}>Work Log</ModalHeader>
+                    <ModalHeader toggle={toggleModal}>{editingId ? 'Update ': 'Create '}Lookup</ModalHeader>
                     <ModalBody>
                         <LookupEntryScreenForm headerId={lookupHeader.id}  editingId={editingId}
                             onSave={(id) => {

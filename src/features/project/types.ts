@@ -10,10 +10,10 @@ export interface Project {
   name: string;
   description: string;  
   state: ProjectState;
-  startDate?: Date;
-  endDate?: Date;
-  projectManagerId: string;
-  projectManager: string;
+  startDate: string;
+  endDate?: string;
+  projectManagerId?: string;
+  projectManager?: string;
 }
 
 export interface ProjectFilter {

@@ -1,14 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { useTable, Column } from 'react-table'
-import { Button, Card, CardBody, Col, Label, Modal, ModalBody, ModalHeader, Row } from "reactstrap";
+import React, { useState } from "react";
+import {  Column } from 'react-table'
+import { Modal, ModalBody, ModalHeader, Row } from "reactstrap";
 import { isMobileSelector, setGlobalError } from "../../../app/core-slice";
+import { dateHelpers } from "../../../app/helpers";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import IconButton from "../../../components/IconButton";
 import SapTable from "../../../components/SapTable";
 import { deleteProject } from "../project-api";
 import { projectFilterSelector, projectsSelector, removeProjectFromList, updateEditingProjectAsync } from "../project-slice";
-import { Project } from "../types";
+import { Project, ProjectState } from "../types";
 import ProjectForm from "./ProjectForm";
+
+function getProjectState(state: ProjectState) {
+    switch (state) {
+        case ProjectState.Pending: return "Pending";
+        case ProjectState.Abandoned: return "Abandoned";
+        case ProjectState.Completed: return "Completed";
+        case ProjectState.Inprogress: return "Inprogress";
+        default: return "NA"
+    }
+}
 
 const ProjectList = () => {
     const dispatch = useAppDispatch();
@@ -34,6 +45,27 @@ const ProjectList = () => {
                     accessor: 'name'
                 },
                 {
+                    Header: 'State',
+                    accessor: 'state',
+                    Cell: props => getProjectState(props.value)
+                },
+                {
+                    Header: 'Start Date',
+                    accessor: 'startDate',
+                    Cell: props => <div className='text-nowrap'>
+                        {isMobile ? dateHelpers.toShortDateString(props.value)
+                            : dateHelpers.toIsoString2(props.value)}
+                    </div>
+                },
+                {
+                    Header: 'End Date',
+                    accessor: 'endDate',
+                    Cell: props => <div className='text-nowrap'>
+                        {isMobile ? props.value && dateHelpers.toShortDateString(props.value)
+                            : props.value && dateHelpers.toIsoString2(props.value)}
+                    </div>
+                },
+                {
                     Header: () => '',
                     accessor: 'id',
                     Cell: props => {
@@ -49,7 +81,7 @@ const ProjectList = () => {
             ];
 
             if (!isMobile) {
-                cols.splice(1, 0, {
+                cols.splice(4, 0, {
                     Header: 'Description',
                     accessor: 'description',
                 });
@@ -62,7 +94,7 @@ const ProjectList = () => {
 
     return (<>
         <SapTable data={data} columns={columns} />
-        <Modal size='lg' centered 
+        <Modal size='lg' centered
             isOpen={!!editingProjectId}
             toggle={() => setEditingProjectId(undefined)}>
             <ModalHeader toggle={() => setEditingProjectId(undefined)}>Edit Project</ModalHeader>

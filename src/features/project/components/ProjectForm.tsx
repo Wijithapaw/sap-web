@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Alert, Button, Card, CardBody, Col, Form, FormGroup, Input, Label, Modal, ModalBody, ModalHeader, Row } from "reactstrap";
+import { dateHelpers } from "../../../app/helpers";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import DateSelect from "../../../components/DateSelect";
 import Dropdown from "../../../components/Dropdown";
 import { createProject, updateProject } from "../project-api";
 import { clearEditingProject, editingProjectSelector, fetchProjectToEditAsync, projectStatusSelector } from "../project-slice";
@@ -23,8 +25,7 @@ const ProjectForm = ({ editingId, onSave, onReset, onDelete }: Props) => {
             id: '',
             description: '',
             name: '',
-            projectManager: '',
-            projectManagerId: '',
+            startDate: dateHelpers.toIsoString(new Date()),
             state: ProjectState.Pending
         };
         return project;
@@ -53,11 +54,11 @@ const ProjectForm = ({ editingId, onSave, onReset, onDelete }: Props) => {
 
     useEffect(() => {
         editingProject && setProject({ ...editingProject, state: +editingProject.state })
-      }, [editingProject]);
+    }, [editingProject]);
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
-        if (!project.name || !project.state || !project.description) {
+        if (!project.name || !project.startDate || project.state === undefined) {
             setMsg('Please fill all the fields', setErrorMsg);
             return;
         }
@@ -104,9 +105,28 @@ const ProjectForm = ({ editingId, onSave, onReset, onDelete }: Props) => {
                     <Dropdown name="state"
                         selectedValue={project.state.toString()}
                         items={projectStatus}
-                        onChange={(val => handleProjectChange('state', val))}
+                        onChange={(val => handleProjectChange('state', +val))}
                         placeholder="Select a state" />
 
+                </FormGroup>
+            </Col>
+        </Row>
+        <Row>
+            <Col>
+                <FormGroup>
+                    <Label>
+                        Start Date
+                    </Label>
+                    <DateSelect value={new Date(project.startDate)} onChange={(val) => handleProjectChange('startDate', dateHelpers.toIsoString(val))} />
+                </FormGroup>
+            </Col>
+            <Col>
+                <FormGroup>
+                    <Label>
+                        End Date
+                    </Label>
+                    <DateSelect value={project.endDate && new Date(project.endDate) || undefined}
+                        onChange={(val) => handleProjectChange('endDate', dateHelpers.toIsoString(val))} />
                 </FormGroup>
             </Col>
         </Row>

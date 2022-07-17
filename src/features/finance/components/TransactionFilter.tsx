@@ -27,7 +27,7 @@ export default function TransactionFilter() {
     <CardBody>
       <Row>
         <Col>
-          <ProjectsMultiSelect initialValues={txnFilter.projects}
+          <ProjectsMultiSelect selectedIds={txnFilter.projects}
             onSelect={(p) => handleFileterChange('projects', p)} />
         </Col>
         <Col md={2}>

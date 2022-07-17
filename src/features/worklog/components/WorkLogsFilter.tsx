@@ -27,7 +27,7 @@ export default function WorkLogsFilter() {
         <Col>
           <Row>
             <Col>
-              <ProjectsMultiSelect initialValues={worklogFilter.projects}
+              <ProjectsMultiSelect selectedIds={worklogFilter.projects}
                 onSelect={(p) => handleFileterChange('projects', p)} />
             </Col>
           </Row>

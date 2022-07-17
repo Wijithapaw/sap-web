@@ -1,6 +1,7 @@
 export interface ListItem {
   key: string;
   value: string;
+  inactive?: boolean
 }
 
 export interface PagedFilter {

@@ -190,7 +190,7 @@ export default function TransactionEntryForm({ editingId, onSave, onReset, onDel
     {
       (canReconcile || editingId) && <FormGroup check>
         <Label for="chkAutoReconcile">
-          Auto Reconcile
+          {editingId ? 'Reconciled' : 'Auto Reconcile'}
         </Label>
         <Input className='me-2'
           id="chkAutoReconcile"

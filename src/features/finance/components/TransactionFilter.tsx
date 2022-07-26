@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, Col,  Row } from "reactstrap";
+import { Button, Card, CardBody, Col, Row } from "reactstrap";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { changeTxnFilter, fetchTransactionsAsync, fetchTransactionSummaryAsync, txnFilterSelector } from "../finance-slice";
 import TransactionSummary from "./TransactionSummary";
@@ -6,6 +6,7 @@ import DateSelect from "../../../components/DateSelect";
 import { dateHelpers } from "../../../app/helpers";
 import { isMobileSelector } from "../../../app/core-slice";
 import ProjectsMultiSelect from "../../project/components/ProjectsMultiSelect";
+import TxnCategorySplitButton from "./TxnCategorySplitButton";
 
 export default function TransactionFilter() {
   const txnFilter = useAppSelector(txnFilterSelector);
@@ -40,10 +41,14 @@ export default function TransactionFilter() {
         </Col>
       </Row>
       <Row>
-        <Col md={10} className="mt-2">
+        <Col md={2} className="mt-2">
+          <TxnCategorySplitButton value={txnFilter.category}
+            onChange={(value) => handleFileterChange("category", value)} />
+        </Col>
+        <Col className="mt-2">
           <TransactionSummary />
         </Col>
-        <Col md={2} className="text-end mt-2">
+        <Col md="auto" className="text-end mt-2">
           <Button color="primary" className={`${isMobile ? 'w-100' : ''}`} onClick={search}>
             Search
           </Button>

@@ -46,7 +46,7 @@ function remove<T>(path: string, queryParams?: any) {
 
 function createQueryString(obj: any) {
   const qs = Object.keys(obj)
-    .map(key => `${key}=${obj[key]}`)
+    .map(key => `${key}=${obj[key] === undefined ? '' : obj[key]}`)
     .join('&');
 
   return '?' + qs;

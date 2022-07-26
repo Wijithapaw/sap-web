@@ -7,6 +7,7 @@ import { dateHelpers } from "../../../app/helpers";
 import { isMobileSelector } from "../../../app/core-slice";
 import ProjectsMultiSelect from "../../project/components/ProjectsMultiSelect";
 import TxnCategorySplitButton from "./TxnCategorySplitButton";
+import TxnReconciledSplitButton from "./TxnReconciledSplitButton";
 
 export default function TransactionFilter() {
   const txnFilter = useAppSelector(txnFilterSelector);
@@ -41,9 +42,13 @@ export default function TransactionFilter() {
         </Col>
       </Row>
       <Row>
-        <Col md={2} className="mt-2">
+        <Col md="auto" className="mt-2">
           <TxnCategorySplitButton value={txnFilter.category}
             onChange={(value) => handleFileterChange("category", value)} />
+        </Col>
+        <Col md="auto" className="mt-2">
+          <TxnReconciledSplitButton value={txnFilter.reconciled}
+            onChange={(value) => handleFileterChange("reconciled", value)} />
         </Col>
         <Col className="mt-2">
           <TransactionSummary />

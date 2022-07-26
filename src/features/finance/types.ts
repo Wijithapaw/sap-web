@@ -35,6 +35,7 @@ export interface TransactionFilter extends PagedFilter {
   toDate?: string;
   searchTerm?: string;
   category?: TxnCategory;
+  reconciled?: boolean;
 }
 
 export interface TransactionSummary {

@@ -15,7 +15,10 @@ export default function DateSelect({ value, onChange, placeHolder, isClearable }
     placeholderText={placeHolder}
     className="form-control"
     dateFormat="yyyy-MM-dd"
+    dropdownMode="select"
+    showMonthDropdown
     showYearDropdown
+    useShortMonthInDropdown
     isClearable={isClearable}
     onChange={onChange} />
 }

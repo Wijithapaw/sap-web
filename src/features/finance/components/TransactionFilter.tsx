@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, Col, Input, Row } from "reactstrap";
+import { Button, Card, CardBody, Col, Form, FormGroup, Input, Row } from "reactstrap";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { changeTxnFilter, fetchTransactionsAsync, fetchTransactionSummaryAsync, txnFilterSelector } from "../finance-slice";
 import TransactionSummary from "./TransactionSummary";
@@ -15,7 +15,9 @@ export default function TransactionFilter() {
 
   const dispatch = useAppDispatch();
 
-  const search = () => {
+  const search = (e:React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     handleFileterChange('page', 1);
     dispatch(fetchTransactionsAsync({ ...txnFilter, page: 1 }));
     dispatch(fetchTransactionSummaryAsync(txnFilter));
@@ -26,43 +28,61 @@ export default function TransactionFilter() {
   }
 
   return <Card className="mt-2 mb-2">
-    <CardBody>
-      <Row>
-        <Col>
-          <ProjectsMultiSelect selectedIds={txnFilter.projects}
-            onSelect={(p) => handleFileterChange('projects', p)} />
-        </Col>
-        <Col md={2}>
-          <DateSelect value={dateHelpers.toDate(txnFilter.fromDate)} placeHolder="From" isClearable
-            onChange={(d) => handleFileterChange('fromDate', dateHelpers.toIsoString(d))} />
-        </Col>
-        <Col md={2} >
-          <DateSelect value={dateHelpers.toDate(txnFilter.toDate)} placeHolder="To" isClearable
-            onChange={(d) => handleFileterChange('toDate', dateHelpers.toIsoString(d))} />
-        </Col>
-      </Row>
-      <Row>
-        <Col className="mt-2">
-          <Input placeholder="Search Term" value={txnFilter.searchTerm || ''}
-            onChange={(e) => handleFileterChange('searchTerm', e.target.value)} />
-        </Col>
-        <Col md="auto" className="mt-2">
-          <TxnCategorySplitButton value={txnFilter.category}
-            onChange={(value) => handleFileterChange("category", value)} />
-        </Col>
-        <Col md="auto" className="mt-2">
-          <TxnReconciledSplitButton value={txnFilter.reconciled}
-            onChange={(value) => handleFileterChange("reconciled", value)} />
-        </Col>
-        <Col md="auto" className="mt-2">
-          <TransactionSummary />
-        </Col>
-        <Col md="auto" className="text-end mt-2">
-          <Button color="primary" className={`${isMobile ? 'w-100' : ''}`} onClick={search}>
-            Search
-          </Button>
-        </Col>
-      </Row>
+    <CardBody className="pb-0">
+      <Form onSubmit={search}>
+        <Row>
+          <Col>
+            <FormGroup>
+              <ProjectsMultiSelect selectedIds={txnFilter.projects}
+                onSelect={(p) => handleFileterChange('projects', p)} />
+            </FormGroup>
+          </Col>
+          <Col md={2}>
+            <FormGroup>
+              <DateSelect value={dateHelpers.toDate(txnFilter.fromDate)} placeHolder="From" isClearable
+                onChange={(d) => handleFileterChange('fromDate', dateHelpers.toIsoString(d))} />
+            </FormGroup>
+          </Col>
+          <Col md={2} >
+            <FormGroup>
+              <DateSelect value={dateHelpers.toDate(txnFilter.toDate)} placeHolder="To" isClearable
+                onChange={(d) => handleFileterChange('toDate', dateHelpers.toIsoString(d))} />
+            </FormGroup>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormGroup>
+              <Input placeholder="Search Term" value={txnFilter.searchTerm || ''}
+                onChange={(e) => handleFileterChange('searchTerm', e.target.value)} />
+            </FormGroup>
+          </Col>
+          <Col md="auto">
+            <FormGroup>
+              <TxnCategorySplitButton value={txnFilter.category}
+                onChange={(value) => handleFileterChange("category", value)} />
+            </FormGroup>
+          </Col>
+          <Col md="auto">
+            <FormGroup>
+              <TxnReconciledSplitButton value={txnFilter.reconciled}
+                onChange={(value) => handleFileterChange("reconciled", value)} />
+            </FormGroup>
+          </Col>
+          <Col md="auto">
+            <FormGroup>
+              <TransactionSummary />
+            </FormGroup>
+          </Col>
+          <Col md="auto" className="text-end">
+            <FormGroup>
+              <Button color="primary" className='w-100' type="submit">
+                Search
+              </Button>
+            </FormGroup>
+          </Col>
+        </Row>
+      </Form>
     </CardBody>
   </Card>
 }

@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, Col, Row } from "reactstrap";
+import { Button, Card, CardBody, Col, Input, Row } from "reactstrap";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { changeTxnFilter, fetchTransactionsAsync, fetchTransactionSummaryAsync, txnFilterSelector } from "../finance-slice";
 import TransactionSummary from "./TransactionSummary";
@@ -42,6 +42,10 @@ export default function TransactionFilter() {
         </Col>
       </Row>
       <Row>
+        <Col className="mt-2">
+          <Input placeholder="Search Term" value={txnFilter.searchTerm || ''}
+            onChange={(e) => handleFileterChange('searchTerm', e.target.value)} />
+        </Col>
         <Col md="auto" className="mt-2">
           <TxnCategorySplitButton value={txnFilter.category}
             onChange={(value) => handleFileterChange("category", value)} />
@@ -50,7 +54,7 @@ export default function TransactionFilter() {
           <TxnReconciledSplitButton value={txnFilter.reconciled}
             onChange={(value) => handleFileterChange("reconciled", value)} />
         </Col>
-        <Col className="mt-2">
+        <Col md="auto" className="mt-2">
           <TransactionSummary />
         </Col>
         <Col md="auto" className="text-end mt-2">

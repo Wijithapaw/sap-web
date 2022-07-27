@@ -6,33 +6,27 @@ import { transactionsSummarySelector } from "../finance-slice";
 export default function TransactionSummary() {
   const txnSummary = useAppSelector(transactionsSummarySelector);
 
-  return <Card>
-    <CardBody className="p-1">
-      <Row className="align-items-center">
-        <Col>
-          <Label className="text-danger">{`Expenses: ${currencyHelpers.toCurrency(txnSummary.expenses, true)}`}</Label>
+  return (<div className="d-inline-flex border rounded bg-light p-2">
+      <Row>
+        <Col xs="auto">
+          <span className="text-danger">{`Ex: ${currencyHelpers.toCurrency(txnSummary.expenses, true)}`}</span>
+        </Col>
+        <Col xs="auto">
+          <span className="text-success">{`In: ${currencyHelpers.toCurrency(txnSummary.income, true)}`}</span>
         </Col>
         {
           (Math.abs(txnSummary.shareDividend) > 0) ? <>
-            <Col>
-              <Label className="text-success">{`Gross Inc: ${currencyHelpers.toCurrency(txnSummary.income, true)}`}</Label>
+            <Col xs="auto">
+              <span className="text-primary">{`Div: ${currencyHelpers.toCurrency(txnSummary.shareDividend, true)}`}</span>
             </Col>
-            <Col>
-              <Label className="text-primary">{`Share Div: ${currencyHelpers.toCurrency(txnSummary.shareDividend, true)}`}</Label>
-            </Col>
-            <Col>
-              <Label className="text-success">{`Net Inc: ${currencyHelpers.toCurrency(txnSummary.income - txnSummary.shareDividend, true)}`}</Label>
-            </Col>
-          </> : <Col>
-            <Label className="text-success">{`Income: ${currencyHelpers.toCurrency(txnSummary.income, true)}`}</Label>
-          </Col>
+          </> : null
         }
-        <Col>
-          <Label className={txnSummary.profit > 0 ? 'text-success' : 'text-danger'}>
-            {`Profit: ${currencyHelpers.toCurrency(txnSummary.profit, true)}`}
-          </Label>
+        <Col xs="auto">
+          <span className={txnSummary.profit > 0 ? 'text-success' : 'text-danger'}>
+            {`Pro: ${currencyHelpers.toCurrency(txnSummary.profit, true)}`}
+          </span>
         </Col>
       </Row>
-    </CardBody>
-  </Card>
+      </div>
+  )
 }

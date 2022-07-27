@@ -51,7 +51,7 @@ export default function ProjectsMultiSelect({ selectedIds, onSelect }: Props) {
         options={projectsOptions}
         onSelect={onSelect} />
     </Col>
-    <Col xs="auto" className="pt-2">
+    <Col xs="auto" className="pt-2 ps-0">
       <Input id="cbkShowInactive" type="checkbox" className="me-1" onChange={(e) => setShowInactive(e.target.checked)} />
       <Label check for="cbkShowInactive">
         Show Inactive

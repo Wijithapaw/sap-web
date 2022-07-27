@@ -18,8 +18,6 @@ export default function LookupEntryScreenForm({ headerId, editingId, onSave }: P
 
     useEffect(() => {
         editingId && getLookup(editingId).then((lookup) => {
-            console.log(lookup);
-
             setEditingLookup(lookup);
         })
     }, [editingId]);

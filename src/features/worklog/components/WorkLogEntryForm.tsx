@@ -2,7 +2,9 @@ import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import { Button, Col, Form, FormGroup, Input, Label, Row } from "reactstrap";
 import { dateHelpers } from "../../../app/helpers";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import { showNotification } from "../../../app/notification-service";
 import { RootState } from "../../../app/store";
+import { NotificationType } from "../../../app/types";
 import DateSelect from "../../../components/DateSelect";
 import ProjectSingleSelect from "../../project/components/ProjectSingleSelect";
 import { WorkLogEntry } from "../types";
@@ -54,15 +56,16 @@ export default function WorkLogEntryForm({ editingId, onSave, onDelete }: Props)
     e.preventDefault();
 
     if (!workLog.projectId || !workLog.date || !workLog.jobDescription || !workLog.labourName) {
-      alert('Please fill all the fields'); //TODO
+      showNotification(NotificationType.warning, 'Please fill all the fields'); 
       return;
     }
 
     var promise = editingId ? updateWorkLog(editingId, workLog) : createWorkLog(workLog);
     promise.then((id) => {
-      !editingId && handleReset();
-
+      showNotification(NotificationType.success, `Worklog ${editingId ? 'updated' : 'created'}`); 
       onSave && onSave(editingId || id);
+    }).catch((err) => {
+      showNotification(NotificationType.error, `Worklog ${editingId ? 'updatation' : 'creation'} failed`); 
     });
   }
 

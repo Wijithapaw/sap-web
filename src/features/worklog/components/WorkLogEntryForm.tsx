@@ -88,13 +88,13 @@ export default function WorkLogEntryForm({ editingId, onSave, onDelete }: Props)
 
   return <Form onSubmit={handleSubmit}>
     <Row>
-      <Col xs={6}>
+      <Col md={6}>
         <FormGroup>
           <Label>Project</Label>
           <ProjectSingleSelect selectedValue={workLog.projectId} onChange={(val) => handleChange('projectId', val)} />
         </FormGroup>
       </Col>
-      <Col>
+      <Col md={3}>
         <FormGroup>
           <Label>Labour</Label>
           <SapTypeAhead id="labour-input"
@@ -102,7 +102,7 @@ export default function WorkLogEntryForm({ editingId, onSave, onDelete }: Props)
             searchFunc={getLabourNames} />
         </FormGroup>
       </Col>
-      <Col>
+      <Col md={3}>
         <FormGroup>
           <Label>Date</Label>
           <DateSelect value={new Date(workLog.date)} onChange={(val) => handleChange('date', dateHelpers.toIsoString(val))} />
@@ -110,13 +110,13 @@ export default function WorkLogEntryForm({ editingId, onSave, onDelete }: Props)
       </Col>
     </Row>
     <Row>
-      <Col xs={9}>
+      <Col md={9}>
         <FormGroup>
           <Label>Job Description</Label>
           <Input name="jobDescription" value={workLog.jobDescription} onChange={handleChangeHtmlInput} />
         </FormGroup>
       </Col>
-      <Col>
+      <Col md={3}>
         <FormGroup>
           <Label>Wage</Label>
           <Input name="wage" type="number" value={workLog.wage || ''} onChange={handleChangeHtmlInput} />

@@ -18,6 +18,10 @@ export function getWorkLog(id: string) {
   return coreApi.get<WorkLog>(`worklogs/${id}`);
 }
 
+export function getLabourNames(prefix: string) {
+  return coreApi.get<string[]>(`worklogs/labours/${prefix}`);
+}
+
 export function deleteWorkLog(id: string) {
   return coreApi.remove(`worklogs/${id}`);
 }

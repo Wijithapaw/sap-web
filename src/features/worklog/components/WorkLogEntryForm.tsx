@@ -6,9 +6,10 @@ import { showNotification } from "../../../app/notification-service";
 import { RootState } from "../../../app/store";
 import { NotificationType } from "../../../app/types";
 import DateSelect from "../../../components/DateSelect";
+import SapTypeAhead from "../../../components/SapTypeAhead";
 import ProjectSingleSelect from "../../project/components/ProjectSingleSelect";
 import { WorkLogEntry } from "../types";
-import { createWorkLog, updateWorkLog } from "../worklog-api";
+import { createWorkLog, getLabourNames, updateWorkLog } from "../worklog-api";
 import { getEditingWorkLogAsync } from "../worklog-slice";
 
 interface Props {
@@ -56,16 +57,16 @@ export default function WorkLogEntryForm({ editingId, onSave, onDelete }: Props)
     e.preventDefault();
 
     if (!workLog.projectId || !workLog.date || !workLog.jobDescription || !workLog.labourName) {
-      showNotification(NotificationType.warning, 'Please fill all the fields'); 
+      showNotification(NotificationType.warning, 'Please fill all the fields');
       return;
     }
 
     var promise = editingId ? updateWorkLog(editingId, workLog) : createWorkLog(workLog);
     promise.then((id) => {
-      showNotification(NotificationType.success, `Worklog ${editingId ? 'updated' : 'created'}`); 
+      showNotification(NotificationType.success, `Worklog ${editingId ? 'updated' : 'created'}`);
       onSave && onSave(editingId || id);
     }).catch((err) => {
-      showNotification(NotificationType.error, `Worklog ${editingId ? 'updatation' : 'creation'} failed`); 
+      showNotification(NotificationType.error, `Worklog ${editingId ? 'updatation' : 'creation'} failed`);
     });
   }
 
@@ -96,7 +97,9 @@ export default function WorkLogEntryForm({ editingId, onSave, onDelete }: Props)
       <Col>
         <FormGroup>
           <Label>Labour</Label>
-          <Input name="labourName" value={workLog.labourName} onChange={handleChangeHtmlInput} />
+          <SapTypeAhead id="labour-input"
+            onInputChange={(q) => handleChange('labourName', q)}
+            searchFunc={getLabourNames} />
         </FormGroup>
       </Col>
       <Col>
@@ -124,7 +127,7 @@ export default function WorkLogEntryForm({ editingId, onSave, onDelete }: Props)
       <Col>
         {
           editingId ? editingWorklog?.wageTxnId && <FormGroup>{editingWorklog.wageTxnReconciled ? "Wage Transaction Created & Reconciled" : "Wage Transaction Created"}</FormGroup> : <FormGroup check>
-            <Label for="createWageTxnCheck" check>Create Transaction</Label>
+            <Label for="createWageTxnCheck" check>Create Transaction <small className="text-muted"><i>[Requires 'wage']</i></small></Label>
             <Input id="createWageTxnCheck" name="createWageTxn" className="me-2" disabled={!workLog.wage}
               checked={workLog.createWageTxn || false}
               type="checkbox"

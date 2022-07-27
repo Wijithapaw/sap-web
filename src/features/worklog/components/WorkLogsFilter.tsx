@@ -22,7 +22,7 @@ export default function WorkLogsFilter() {
   }
 
   return <Card className="mt-2 mb-2">
-    <CardBody>
+    <CardBody className="pb-0">
       <Form>
         <Row>
           <Col>

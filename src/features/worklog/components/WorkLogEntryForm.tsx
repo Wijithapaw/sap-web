@@ -33,10 +33,10 @@ export default function WorkLogEntryForm({ editingId, onSave, onDelete }: Props)
     return log;
   }, []);
 
-  const [workLog, setWorkLog] = useState({ ...newWorkLog });
+  const [workLog, setWorkLog] = useState<WorkLogEntry>();
 
   useEffect(() => {
-    editingId && dispatch(getEditingWorkLogAsync(editingId))
+    editingId ? dispatch(getEditingWorkLogAsync(editingId)) : setWorkLog({ ...newWorkLog });
   }, [editingId])
 
   useEffect(() => {
@@ -50,13 +50,13 @@ export default function WorkLogEntryForm({ editingId, onSave, onDelete }: Props)
   }, [editingWorklog])
 
   const handleChange = (field: string, value: any) => {
-    setWorkLog({ ...workLog, [field]: value });
+    workLog && setWorkLog({ ...workLog, [field]: value });
   }
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    if (!workLog.projectId || !workLog.date || !workLog.jobDescription || !workLog.labourName) {
+    if (!workLog || !workLog.projectId || !workLog.date || !workLog.jobDescription || !workLog.labourName) {
       showNotification(NotificationType.warning, 'Please fill all the fields');
       return;
     }
@@ -86,6 +86,8 @@ export default function WorkLogEntryForm({ editingId, onSave, onDelete }: Props)
     } : newWorkLog);
   }
 
+  if(!workLog) return null;
+
   return <Form onSubmit={handleSubmit}>
     <Row>
       <Col md={6}>
@@ -98,6 +100,7 @@ export default function WorkLogEntryForm({ editingId, onSave, onDelete }: Props)
         <FormGroup>
           <Label>Labour</Label>
           <SapTypeAhead id="labour-input"
+            defaultInputValue={workLog.labourName}
             onInputChange={(q) => handleChange('labourName', q)}
             searchFunc={getLabourNames} />
         </FormGroup>

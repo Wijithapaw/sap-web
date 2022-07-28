@@ -7,11 +7,12 @@ const CACHE: IDictionary<string[]> = {};
 interface Props {
     id: string;
     placeholder?: string;
+    defaultInputValue?: string;
     onInputChange: (query: string) => void;
     searchFunc: (q: string) => Promise<string[]>;
 }
 
-export default function SapTypeAhead({ id, placeholder, onInputChange, searchFunc }: Props) {
+export default function SapTypeAhead({ id, placeholder, defaultInputValue, onInputChange, searchFunc }: Props) {
     const [options, setOptions] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -42,6 +43,7 @@ export default function SapTypeAhead({ id, placeholder, onInputChange, searchFun
         options={options}
         useCache={false}
         allowNew
-        newSelectionPrefix="New: "            
+        newSelectionPrefix="New: "     
+        defaultInputValue={defaultInputValue}     
     />
 }

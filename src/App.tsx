@@ -19,6 +19,8 @@ import AdminPage from './features/admin/components/AdminPage';
 import WorkLogsPage from './features/worklog/components/WorkLogsPage';
 import SapToast from './components/SapToast';
 
+import 'react-bootstrap-typeahead/css/Typeahead.css';
+
 library.add(fas);
 
 function App() {

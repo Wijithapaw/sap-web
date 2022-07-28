@@ -17,14 +17,15 @@ export default function SapTypeAhead({ id, placeholder, onInputChange, searchFun
 
     const handleChange = useCallback((q: string) => {
         if (CACHE[q]) {
-            console.log(2);
             setOptions(CACHE[q]);
             return;
         }
 
         setIsLoading(true);
         searchFunc(q).then(options => {
-            CACHE[q] = options;
+            if(options.length > 0)
+                CACHE[q] = options;
+
             setOptions(options);
             setIsLoading(false);
         });
@@ -39,5 +40,7 @@ export default function SapTypeAhead({ id, placeholder, onInputChange, searchFun
         renderMenuItemChildren={(option) => <span>{option}</span>}
         options={options}
         useCache={false}
+        allowNew
+        newSelectionPrefix=""            
     />
 }

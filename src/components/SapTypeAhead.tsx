@@ -36,11 +36,12 @@ export default function SapTypeAhead({ id, placeholder, onInputChange, searchFun
         minLength={2}
         placeholder={placeholder || "Start typing..."}
         onInputChange={onInputChange}
+        onChange={(e) => onInputChange(e[0] as string)}
         onSearch={handleChange}
         renderMenuItemChildren={(option) => <span>{option}</span>}
         options={options}
         useCache={false}
         allowNew
-        newSelectionPrefix=""            
+        newSelectionPrefix="New: "            
     />
 }

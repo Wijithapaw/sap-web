@@ -15,7 +15,7 @@ export default function SapToast() {
     return <div aria-live="polite" aria-atomic="true">
         <div style={{ position: "absolute", top: 0, right: 0, zIndex: 9999, float: "right" }}>
             {
-                notifications.map(n => (<Toast className="m-2" style={{ background: 'white' }}>
+                notifications.map(n => (<Toast key={n.id} className="m-2" style={{ background: 'white' }}>
                     <ToastHeader key={n.id} 
                         icon={n.type ===  NotificationType.error ? 'danger' : n.type === NotificationType.warning ? 'warning' : 'success'}
                         toggle={() => handleToggle(n.id)}>
